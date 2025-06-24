@@ -26,14 +26,16 @@ const Page = () => {
             </span> 
             sent directly to your Discord.
             </p>
-            <ul className="space-y-2 text-base/7 text-gray-600 text-left flex flex-col items-center sm:items-start">
+
+            <ul className="space-y-2 text-base/7 text-gray-600
+             text-left flex flex-col items-start">
             {[
               "Real-time Discord alerts for critical events",
               "Buy once, use forever",
               "Track sales, new users, or any other event",
             ].map((item, index) => (                                        // On utilise la méthode map pour itérer sur chaque élément du tableau et créer un élément de liste <li> pour chaque item. Chaque élément de liste contient le texte de l'item et est stylisé avec des classes CSS pour l'alignement et l'espacement.
               <li key={index} className="flex gap-1.5 items-center text-left">        {/* key={index} est utilisé pour donner une clé unique à chaque élément de la liste, ce qui est important pour React afin de suivre les éléments lors du rendu. */}
-                <Check className="size-5"/>
+                <Check className="size-5 shrink-0 text-brand-700"/>
                 {item}
                 </li>
               ))}
