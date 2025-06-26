@@ -1,0 +1,12 @@
+import {PropsWithChildren} from "react"
+
+export const MockDiscordUI = ({children}: PropsWithChildren) => {  // Ici, on crée un composant MockDiscordUI qui sera utilisé pour simuler l'interface utilisateur de Discord. Ce composant est une fonction fléchée qui prend en paramètre des props, ici children, qui est de type PropsWithChildren. Cela signifie que ce composant peut recevoir n'importe quel contenu React, comme du texte, des éléments HTML, d'autres composants, etc. Par exemple, si on place du texte ou d'autres composants entre les balises d'ouverture et de fermeture du composant MockDiscordUI dans le fichier page.tsx, ce contenu sera affiché ici dans le composant MockDiscordUI. PropsWithChildren est un type générique de TypeScript qui permet de définir des props qui peuvent contenir des enfants (children) dans un composant React. 
+    return (
+    <div className="flex min-h-[800px] w-full max-w-[1200px] bg-discord-background text-white rounded-lg overflow-hidden shadow-xl">  {/* Ici, on crée une div qui contiendra l'interface utilisateur de Discord. La classe flex permet d'utiliser Flexbox pour la mise en page, min-h-[800px] définit une hauteur minimale de 800 pixels, w-full définit une largeur de 100%, max-w-[1200px] limite la largeur maximale à 1200 pixels, bg-discord-background définit la couleur de fond personnalisée pour Discord, text-white définit la couleur du texte en blanc, rounded-lg arrondit les coins de la div, overflow-hidden masque tout contenu qui dépasse les limites de la div, et shadow-xl ajoute une ombre portée pour un effet visuel attrayant. */}
+       {/* server list */}                       
+    <div className= "hidden sm:flex w-[72px] bg-discord-background py-3 flex-col items-center">        {/* Ici, on crée une div qui représente la liste des serveurs Discord. La classe hidden sm:flex masque cette div sur les écrans plus petits que "sm" (small) et l'affiche en tant que flexbox sur les écrans plus grands. w-[72px] définit une largeur de 72 pixels, bg-discord-background applique la couleur de fond personnalisée pour Discord, py-3 ajoute un espacement vertical de 3 unités, flex-col aligne les éléments enfants en colonne, et items-center centre les éléments horizontalement. */}
+        <div className="size-12 bg-"></div>
+        </div>
+     </div>
+  ) 
+}
