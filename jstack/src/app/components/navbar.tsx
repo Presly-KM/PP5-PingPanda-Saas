@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MaxWidthWrapper } from "./max-width-wrapper";
 import { use } from "react";
+import {SignOutButton} from "@clerk/nextjs";
 
 export const Navbar = () => {                          // Ici, on crée un composant Navbar qui sera utilisé pour afficher la barre de navigation en haut de la page. Ce composant est une fonction fléchée qui retourne du JSX, le langage de balisage utilisé par React pour décrire l'interface utilisateur.
     const user = false; // on veut dés la barre de navigation afficher le statut de l'utilisatuer. On crée alors ici "un mock" en d'autre terme on hardcode pour que navigateur agissse et affiche la page comme quand l'utilisateur n'est pas connecté. On initialise une variable user à false, ce qui signifie que l'utilisateur n'est pas connecté. Cela peut être utilisé plus tard pour afficher des liens de connexion ou de déconnexion en fonction de l'état de l'utilisateur.
@@ -13,10 +14,13 @@ export const Navbar = () => {                          // Ici, on crée un compo
                 </Link>
 
                 <div className="h-full flex items-center space-x-4"> {/* Ici, on crée une div qui contiendra les liens de navigation. La classe h-full permet à cette div de prendre toute la hauteur de son parent, et flex items-center space-x-4 aligne les éléments enfants horizontalement avec un espacement de 4 unités entre eux. */}
-                    {user ? <>                                       {/* Ici, on utilise une condition pour vérifier si l'utilisateur est connecté. Si user est true, on affiche les liens de navigation pour un utilisateur connecté. En gors le navbar va dépendre du fait de si l'utilisateur est connecté ou non */}
-
-                    </> : null}
-                        
+                    {user ? (  
+                    <>                                      
+                    <SignOutButton>
+                        <button className=""></button>
+                    </SignOutButton>
+                    </>
+                   ) : null}
                 </div>
               </div> 
         </MaxWidthWrapper>
