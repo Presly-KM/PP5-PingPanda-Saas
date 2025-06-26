@@ -1,7 +1,8 @@
-import { Heading } from "@/app/components/heading"; // Importation du composant Heading pour les titres
-import { MaxWidthWrapper } from "@/app/components/max-width-wrapper"; // Importation du composant MaxWidthWrapper pour gérer la largeur maximale du contenu
+import { Heading } from "@/components/heading"; // Importation du composant Heading pour les titres
+import { MaxWidthWrapper } from "@/components/max-width-wrapper"; // Importation du composant MaxWidthWrapper pour gérer la largeur maximale du contenu
 import { Check } from "lucide-react"; // Importation de l'icône Check de la bibliothèque lucide-react pour les listes à puces
-import { ShinyButton } from "@/app/components/shiny-button"; // Importation du composant ShinyButton pour les boutons stylisés
+import { ShinyButton } from "@/components/shiny-button"; // Importation du composant ShinyButton pour les boutons stylisés
+
 const Page = () => {
   return (
   <>
@@ -53,7 +54,17 @@ const Page = () => {
         </div>
         </MaxWidthWrapper>  {/* Ici, MaxWidthWrapper est un composant qui gère la largeur maximale du contenu il uniformise le styling à travers toute notre application. On peut toujours utiliser ce "component réutilisable" afin de s'assurer que la largeur dans notre landing page ou dans le tableau de bord etc. sera toujours le même   */}
      </section>
-     <section></section>
+
+     <section className="relative bg-brand-25 pb-4">
+      <div className="absolute inset-x-0 bottom-24 top-24 bg-brand-700" />
+      <div className="relative mx-auto">
+        <MaxWidthWrapper className="relative"> 
+          <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+          <MockDiscordUI></MockDiscordUI>
+          </div>
+        </MaxWidthWrapper>
+      </div>
+     </section>
      <section></section>
      <section></section>
   </>
