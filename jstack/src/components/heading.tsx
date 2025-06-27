@@ -20,3 +20,4 @@ export const Heading = ( { children, className, ...props }: HeadingProps) =>   /
     </h1>
   )
 }
+
