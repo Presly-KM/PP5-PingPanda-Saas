@@ -2,7 +2,7 @@ import { Heading } from "@/components/heading"; // Importation du composant Head
 import { MaxWidthWrapper } from "@/components/max-width-wrapper"; // Importation du composant MaxWidthWrapper pour gérer la largeur maximale du contenu
 import { Check } from "lucide-react"; // Importation de l'icône Check de la bibliothèque lucide-react pour les listes à puces
 import { ShinyButton } from "@/components/shiny-button"; // Importation du composant ShinyButton pour les boutons stylisés
-
+import { MockDiscordUI } from "@/components/mock-discord-ui"; // Importation du composant MockDiscordUI pour simuler l'interface utilisateur de Discord
 const Page = () => {
   return (
   <>
