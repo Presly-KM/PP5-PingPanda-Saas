@@ -5,6 +5,7 @@ import { ShinyButton } from "@/components/shiny-button"; // Importation du compo
 import { MockDiscordUI } from "@/components/mock-discord-ui"; // Importation du composant MockDiscordUI pour simuler l'interface utilisateur de Discord
 import { AnimatedList, AnimatedListItem } from "@/components/magicui/animated-list";
 import { DiscordMessage } from "@/components/discord-message"; // Importation du composant DiscordMessage pour afficher les messages Discord
+import Image from "next/image"; // Importation du composant Image de Next.js pour afficher les images de manière optimisée
 
 const Page = () => {
   const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {
@@ -147,9 +148,28 @@ const Page = () => {
             <p className="mt-2 text-lg/7 font-medium tracking-tight text-brand-950 max-lg:text-center"> Real-Time notifications</p> {/* Ici, on utilise une balise <p> pour afficher le texte "Real-Time notifications". La classe mt-2 ajoute une marge supérieure de 2 unités, text-lg/7 définit la taille du texte à 7 unités, font-medium applique une graisse de police moyenne, tracking-tight réduit l'espacement entre les lettres, et text-brand-950 applique une couleur de texte personnalisée définie dans le fichier tailwind.config.ts. max-lg:text-center aligne le texte au centre MAIS UNIQUEMENT sur les écrans plus petits que "lg" (large). */}
             <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
             Get notified about critical events the moment they happen, 
-            no matter if you're at home or on the go.</p>
+            no matter if you're at home or on the go.
+            </p>
+          </div>
+
+          <div className="relative min-h-[30rem] w-full grow [container-type:inline-size] max-lg:mx-auto max-lg:max-w-sm"> {/* Ici, on utilise une div avec la classe relative pour créer un conteneur flexible qui s 'étend sur toute la largeur de l'élément parent. min-h-[30rem] définit une hauteur minimale de 30 rem, w-full permet à l'élément de prendre toute la largeur disponible, et grow permet à l'élément de s'étendre pour remplir l'espace disponible. [container-type:inline-size] est une propriété CSS qui permet à l'élément de s'adapter à la taille de son conteneur parent. max-lg:mx-auto centre l'élément horizontalement sur les écrans plus petits que "lg" (large), et max-lg:max-w-sm limite la largeur maximale de l'élément à "sm" (small) sur les écrans plus petits. */}
+          <div className="absolute inset-x-10 bottom-0 top-10 overflow-hidden rounded-t-[12cqw] border-x-[3cqw] border-t-[3cqw] border-gray-700 bg-gray-900 shadow-2xl">      {/* Ici, on utilise une div avec la classe absolute pour créer un fond gris foncé arrondi qui s'étend sur toute la largeur de l'élément parent. inset-x-10 définit les marges intérieures (padding) à 10 unités sur les côtés gauche et droit, bottom-0 et top-10 définissent les marges inférieure et supérieure respectivement. overflow-hidden masque tout contenu qui dépasse les limites du conteneur. rounded-t-[12cqw] arrondit le coin supérieur de l'élément à 12 unités de largeur de conteneur, border-x-[3cqw] et border-t-[3cqw] définissent les bordures gauche, droite et supérieure respectivement à 3 unités de largeur de conteneur, border-gray-700 applique une couleur de bordure personnalisée définie dans le fichier tailwind.config.ts, et shadow-2xl ajoute une ombre portée à l'élément. 12cqw etc. permet de styliser ou regler le border raduis en accord avec le parent, ou n'importequel div se trouvant au dessus de l'enfant ci-contre qui contient la mention "[container-type:inline-size]". Ce borad radius est maintenant relatif au parent et ce par rapport auu viewport ce qui lui permet de toujours garder exactement la forme qu'on veut qu'il ait quelque soit la taille de l'écran. Pourquoi ? Parce c'est quelque soit le contexte tout est réglé pour etre relatif au parent ! Donc en résumé ce border-radius se rétrécit et se grossit AVEC le parent. Le meme principe "d'héritage" s'applique au "border" qui suivent  */}
+             <Image 
+               className="size-full object-cover object-top" 
+                    src="/phone-screen.png" 
+                    alt="Phone screen displaying app interface"
+                    fill
+                    />
           </div>
         </div>
+      </div>
+
+      <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-l-[rem"/>
+      </div>
+
+      {/* Second bento grid element*/}
+      <div className="relative max-lg:row-start-1">
+        <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] "/> {/* Ici, on utilise une div avec la classe absolute pour créer un fond blanc arrondi qui s'étend sur toute la largeur et la hauteur de l'élément parent. La classe inset-px permet de définir les marges intérieures (padding) à 1 pixel, et max-lg:rounded-t-[2rem] arrondit le coin supérieur de l'élément à 2 rem sur les écrans plus petits que "lg" (large). */}
       </div>
      </div>
        </MaxWidthWrapper>
