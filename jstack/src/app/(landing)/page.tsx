@@ -3,7 +3,26 @@ import { MaxWidthWrapper } from "@/components/max-width-wrapper"; // Importation
 import { Check } from "lucide-react"; // Importation de l'icône Check de la bibliothèque lucide-react pour les listes à puces
 import { ShinyButton } from "@/components/shiny-button"; // Importation du composant ShinyButton pour les boutons stylisés
 import { MockDiscordUI } from "@/components/mock-discord-ui"; // Importation du composant MockDiscordUI pour simuler l'interface utilisateur de Discord
+import { AnimatedList, AnimatedListItem } from "@/components/magicui/animated-list";
+import { DiscordMessage } from "@/components/discord-message"; // Importation du composant DiscordMessage pour afficher les messages Discord
+
 const Page = () => {
+  const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {
+  method: "POST",
+  body: JSON.stringify({
+    category: "sale",
+    fields: {
+      plan: "PRO",
+      email: "romeo.santaolalla@gmail.com",
+      amount: 49.00
+    }
+  }),
+  headers: {
+    Authorization: "Bearer <YOUR_API_KEY>"
+  }
+})`
+  
+  
   return (
   <>
      <section className="relative py-24 sm:py-32 bg-brand-25">      {/* Ici, on utilise une section pour encapsuler le contenu principal de la page. La classe CSS relative permet de positionner les éléments enfants par rapport à cette section. Les classes py-24 et sm:py-32 définissent l'espacement vertical (padding) pour la section, avec des valeurs différentes pour les écrans plus petits (sm). bg-brand-25 applique une couleur de fond personnalisée définie dans le fichier tailwind.config.ts. */}
@@ -60,12 +79,81 @@ const Page = () => {
       <div className="relative mx-auto">
         <MaxWidthWrapper className="relative"> 
           <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-          <MockDiscordUI></MockDiscordUI>
+          <MockDiscordUI>
+            <AnimatedList>
+              <DiscordMessage   
+                avatarSrc="/brand-asset-profile-picture.png" 
+                avatarAlt="PingPanda Avatar"
+                username="PingPanda"
+                timestamp="Today at 12:35PM"
+                badgeText="SignUp"
+                badgeColor="#43b581"
+                title="👤 New user signed up"
+                content={{
+                  name: "John Doe",
+                  email: "johndoe@gmail.com",
+                }}
+              />        
+              <DiscordMessage   
+                avatarSrc="/brand-asset-profile-picture.png" 
+                avatarAlt="PingPanda Avatar"
+                username="PingPanda"
+                timestamp="Today at 12:35PM"
+                badgeText="Revenue"
+                badgeColor="#faa61a"
+                title="💰 Payment received"
+                content={{
+                  amount: "$49.00",
+                  email: "romeo.santaolalla@gmail.com",
+                  plan: "PRO",
+                }}
+              />        
+              <DiscordMessage   
+                avatarSrc="/brand-asset-profile-picture.png" 
+                avatarAlt="PingPanda Avatar"
+                username="PingPanda"
+                timestamp="Today at 5:11PM"
+                badgeText="Milestone"
+                badgeColor="#5865f2"
+                title="🚀 Revenue Milestone Achieved"
+                content={{
+                  recurringRevenue: "$5.000.USD",
+                  growth: "+8.2%",
+                }}
+              />        
+            </AnimatedList>
+          </MockDiscordUI>
           </div>
         </MaxWidthWrapper>
       </div>
      </section>
-     <section></section>
+
+     <section className="relative py-24 sm:py-32 bg-brand-25">
+     <MaxWidthWrapper className="flex flex-col items-center gap-16 sm:gap-20">
+      <div>
+        <h2 className="text-center text-base/7 font-semibold text-brand-600">
+        Intuitive Monitoring
+        </h2>
+        <Heading>Stay ahead with real-time insights</Heading>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3 lg:grid-rows-2">
+       {/*first bento grid element*/}
+        <div className="relative lg:row-span-2">
+          <div className="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]" />  {/* Ici, on utilise une div avec la classe absolute pour créer un fond blanc arrondi qui s'étend sur toute la largeur et la hauteur de l'élément parent. La classe inset-px permet de définir les marges intérieures (padding) à 1 pixel, et lg:rounded-l-[2rem] arrondit le coin gauche de l'élément à 2 rem sur les écrans plus larges. */}
+
+          <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">   {/* Ici, on utilise une div avec la classe relative pour créer un conteneur flexible qui s'étend sur toute la hauteur de l'élément parent. La classe flex permet d'utiliser Flexbox pour aligner les éléments enfants, et overflow-hidden masque tout contenu qui dépasse les limites du conteneur. rounded-[calc(theme(borderRadius.lg)+1px)] arrondit les coins de l'élément en utilisant la valeur de borderRadius.lg définie dans le fichier tailwind.config.ts, plus 1 pixel pour compenser la bordure. lg:rounded-l-[calc(2rem+1px)] arrondit le coin gauche de l'élément à 2 rem plus 1 pixel sur les écrans plus larges. */}
+           <div className="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
+            <p className="mt-2 text-lg/7 font-medium tracking-tight text-brand-950 max-lg:text-center"> Real-Time notifications</p> {/* Ici, on utilise une balise <p> pour afficher le texte "Real-Time notifications". La classe mt-2 ajoute une marge supérieure de 2 unités, text-lg/7 définit la taille du texte à 7 unités, font-medium applique une graisse de police moyenne, tracking-tight réduit l'espacement entre les lettres, et text-brand-950 applique une couleur de texte personnalisée définie dans le fichier tailwind.config.ts. max-lg:text-center aligne le texte au centre MAIS UNIQUEMENT sur les écrans plus petits que "lg" (large). */}
+            <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
+            Get notified about critical events the moment they happen, 
+            no matter if you're at home or on the go.</p>
+          </div>
+        </div>
+      </div>
+     </div>
+       </MaxWidthWrapper>
+      </section>
      <section></section>
   </>
   )
