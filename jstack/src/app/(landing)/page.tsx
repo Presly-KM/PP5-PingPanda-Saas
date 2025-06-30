@@ -170,6 +170,49 @@ const Page = () => {
       {/* Second bento grid element*/}
       <div className="relative max-lg:row-start-1">
         <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem] "/> {/* Ici, on utilise une div avec la classe absolute pour créer un fond blanc arrondi qui s'étend sur toute la largeur et la hauteur de l'élément parent. La classe inset-px permet de définir les marges intérieures (padding) à 1 pixel, et max-lg:rounded-t-[2rem] arrondit le coin supérieur de l'élément à 2 rem sur les écrans plus petits que "lg" (large). */}
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]"> {/* Ici, on utilise une div avec la classe relative pour créer un conteneur flexible qui s'étend sur toute la hauteur de l'élément parent. La classe flex permet d'utiliser Flexbox pour aligner les éléments enfants, et overflow-hidden masque tout contenu qui dépasse les limites du conteneur. rounded-[calc(theme(borderRadius.lg)+1px)] arrondit les coins de l'élément en utilisant la valeur de borderRadius.lg définie dans le fichier tailwind.config.ts, plus 1 pixel pour compenser la bordure. max-lg:rounded-t-[calc(2rem+1px)] arrondit le coin supérieur de l'élément à 2 rem plus 1 pixel sur les écrans plus petits que "lg" (large). */}
+          <div className="px-8 pt-8 sm:px-10 sm:pt-10">   {/* Ici, on utilise une div avec la classe px-8 pour ajouter un padding horizontal de 8 unités, et sm:px-10 pour ajouter un padding horizontal de 10 unités sur les écrans plus larges. pt-8 ajoute un padding supérieur de 8 unités, et sm:pt-10 ajoute un padding supérieur de 10 unités sur les écrans plus larges. */}
+            <p className="mt-2 text-lg/7 font-medium tracking-tight text-brand-950 max-lg:text-center"> Track Any Event</p> {/* Ici, on utilise une balise <p> pour afficher le texte "Real-Time notifications". La classe mt-2 ajoute une marge supérieure de 2 unités, text-lg/7 définit la taille du texte à 7 unités, font-medium applique une graisse de police moyenne, tracking-tight réduit l'espacement entre les lettres, et text-brand-950 applique une couleur de texte personnalisée définie dans le fichier tailwind.config.ts. max-lg:text-center aligne le texte au centre MAIS UNIQUEMENT sur les écrans plus petits que "lg" (large). */}
+            <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
+               From new user signups to successful payments, PingPanda notifies you for all critical events in your Saas. 
+            </p>
+          </div>
+          <div className="flex flex-1 items-center justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
+            <Image                         
+              className="w-full max-lg:max-w-xs" 
+              src="/bento-any-event.png" 
+              alt="Bento box illustrating event tracking" 
+              width={500} 
+              height={300} 
+              />      {/* Ici, on utilise une balise <Image> pour afficher une image. La classe w-full permet à l'image de prendre toute la largeur disponible, max-lg:max-w-xs limite la largeur maximale de l'image à "xs" (extra small) sur les écrans plus petits que "lg" (large). */}
+          </div>
+        </div>
+
+        <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-t-[2rem]"/>
+        </div>
+
+      {/* Third bento grid element*/}
+      <div className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
+        <div className="absolute inset-px rounded-lg bg-white "/> {/* Ici, on utilise une div avec la classe absolute pour créer un fond blanc arrondi qui s'étend sur toute la largeur et la hauteur de l'élément parent. La classe inset-px permet de définir les marges intérieures (padding) à 1 pixel. */}
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)]"> {/* Ici, on utilise une div avec la classe relative pour créer un conteneur flexible qui s'étend sur toute la hauteur de l'élément parent. La classe flex permet d'utiliser Flexbox pour aligner les éléments enfants, et overflow-hidden masque tout contenu qui dépasse les limites du conteneur. rounded-[calc(theme(borderRadius.lg)+1px)] arrondit les coins de l'élément en utilisant la valeur de borderRadius.lg définie dans le fichier tailwind.config.ts, plus 1 pixel pour compenser la bordure. */}
+          <div className="px-8 pt-8 sm:px-10 sm:pt-10">
+            <p className="mt-2 text-lg/7 font-medium tracking-tight text-brand-950 max-lg:text-center"> Track Any Properties</p> {/* Ici, on utilise une balise <p> pour afficher le texte "Real-Time notifications". La classe mt-2 ajoute une marge supérieure de 2 unités, text-lg/7 définit la taille du texte à 7 unités, font-medium applique une graisse de police moyenne, tracking-tight réduit l'espacement entre les lettres, et text-brand-950 applique une couleur de texte personnalisée définie dans le fichier tailwind.config.ts. max-lg:text-center aligne le texte au centre MAIS UNIQUEMENT sur les écrans plus petits que "lg" (large). */}
+            <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
+               Add any custom data you like to an event, such as user email, a purchase amount or an exceeded quota.  
+            </p>
+          </div>
+          <div className="flex flex-1 items-center justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
+            <Image                         
+              className="w-full max-lg:max-w-xs" 
+              src="/bento-custom-data.png"
+              alt="Bento box illustrating custom data tracking"
+              width={500}
+              height={300}
+              />     
+       </div>     
+      </div>
+
+      <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"/>
       </div>
      </div>
        </MaxWidthWrapper>
