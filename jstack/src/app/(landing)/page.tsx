@@ -164,7 +164,7 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-l-[rem"/>
+      <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 lg:rounded-l-[2rem]"/>
       </div>
 
       {/* Second bento grid element*/}
@@ -201,7 +201,8 @@ const Page = () => {
                Add any custom data you like to an event, such as user email, a purchase amount or an exceeded quota.  
             </p>
           </div>
-          <div className="flex flex-1 items-center justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2">
+
+          <div className="flex flex-1 items-center justify-center px-8 max-lg:pb-12 max-lg:pt-10 sm:px-10 lg:pb-2"> {/* Ici, on utilise une div avec la classe flex pour créer un conteneur flexible qui aligne les éléments enfants horizontalement. items-center centre les éléments verticalement, justify-center centre les éléments horizontalement, et px-8 ajoute un padding horizontal de 8 unités. max-lg:pb-12 et max-lg:pt-10 ajoutent respectivement un padding inférieur de 12 unités et un padding supérieur de 10 unités sur les écrans plus petits que "lg" (large). sm:px-10 ajoute un padding horizontal de 10 unités sur les écrans plus larges, et lg:pb-2 ajoute un padding inférieur de 2 unités sur les écrans plus larges. */}
             <Image                         
               className="w-full max-lg:max-w-xs" 
               src="/bento-custom-data.png"
@@ -214,6 +215,38 @@ const Page = () => {
 
       <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5"/>
       </div>
+
+      {/* Fourth bento grid element*/}
+      <div className="relative lg:row-span-2">
+        <div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"/> {/* Ici, on utilise une div avec la classe absolute pour créer un fond blanc arrondi qui s'étend sur toute la largeur et la hauteur de l'élément parent. La classe inset-px permet de définir les marges intérieures (padding) à 1 pixel, et max-lg:rounded-b-[2rem] arrondit le coin inférieur de l'élément à 2 rem sur les écrans plus petits que "lg" (large). lg:rounded-r-[2rem] arrondit le coin droit de l'élément à 2 rem sur les écrans plus larges. */}
+        <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]"> {/* Ici, on utilise une div avec la classe relative pour créer un conteneur flexible qui s'étend sur toute la hauteur de l'élément parent. La classe flex permet d'utiliser Flexbox pour aligner les éléments enfants, et overflow-hidden masque tout contenu qui dépasse les limites du conteneur. rounded-[calc(theme(borderRadius.lg)+1px)] arrondit les coins de l'élément en utilisant la valeur de borderRadius.lg définie dans le fichier tailwind.config.ts, plus 1 pixel pour compenser la bordure. max-lg:rounded-b-[calc(2rem+1px)] arrondit le coin inférieur de l'élément à 2 rem plus 1 pixel sur les écrans plus petits que "lg" (large), et lg:rounded-r-[calc(2rem+1px)] arrondit le coin droit de l'élément à 2 rem plus 1 pixel sur les écrans plus larges. */}
+          <div className="px-8 pb-3 pt-8 sm:px-10 sm:pb-0 sm:pt-10">
+            <p className="mt-2 text-lg/7 font-medium tracking-tight text-brand-950 max-lg:text-center"> Easy Integration</p> {/* Ici, on utilise une balise <p> pour afficher le texte "Real-Time notifications". La classe mt-2 ajoute une marge supérieure de 2 unités, text-lg/7 définit la taille du texte à 7 unités, font-medium applique une graisse de police moyenne, tracking-tight réduit l'espacement entre les lettres, et text-brand-950 applique une couleur de texte personnalisée définie dans le fichier tailwind.config.ts. max-lg:text-center aligne le texte au centre MAIS UNIQUEMENT sur les écrans plus petits que "lg" (large). */}
+            <p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
+               Connect PingPanda with your existing workflows in minutes and call our intuitive logging API from any language.
+            </p>
+           </div>
+
+           <div className="relative min-h-[30rem] w-full grow">
+            <div className="absolute bottom-0 left-10 right-0 top-10 overflow-hidden rounded-tl-xl bg-gray-900 shadow-2xl">
+              <div className="flex bg-gray-800/40 ring-1 ring-white/5"> 
+                <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
+                  <div className="border-b border-r border-b-white/20 border-r-white/10 bg-white/5 px-4 py-2 text-white">
+                  pingpanda.js
+              
+                </div>
+                </div>
+               </div> 
+
+                  <div className="overflow-hidden">
+                    <div className="max-h-[30rem]">
+                        
+                    </div>
+                </div>
+              </div>
+           </div>
+        </div>
+       </div>
      </div>
        </MaxWidthWrapper>
       </section>
