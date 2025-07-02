@@ -5,12 +5,14 @@ import { ShinyButton } from "@/components/shiny-button"; // Importation du compo
 import { MockDiscordUI } from "@/components/mock-discord-ui"; // Importation du composant MockDiscordUI pour simuler l'interface utilisateur de Discord
 import { AnimatedList, AnimatedListItem } from "@/components/magicui/animated-list";
 import { DiscordMessage } from "@/components/discord-message"; // Importation du composant DiscordMessage pour afficher les messages Discord
-import Image from "next/image"; // Importation du composant Image de Next.js pour afficher les images de manière optimisée
+import Image from "next/image"; // Importation du composant Image de Next.js pour afficher les images de manière optimisée par exemple pour le chargement paresseux et la gestion des tailles d'image
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'; // Importation du composant Prism pour la coloration syntaxique du code
+import { oneDark  } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const Page = () => {
-  const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {
+  const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {      // On utilise fetch pour envoyer une requête POST à l'API pour enregistrer un événement.
   method: "POST",
-  body: JSON.stringify({
+  body: JSON.stringify({                                                        // On envoie un objet JSON contenant les détails de l'événement.
     category: "sale",
     fields: {
       plan: "PRO",
@@ -18,8 +20,8 @@ const Page = () => {
       amount: 49.00
     }
   }),
-  headers: {
-    Authorization: "Bearer <YOUR_API_KEY>"
+  headers: {                                                                     // On définit les en-têtes de la requête, y compris le type de contenu et l'autorisation.
+    Authorization: "Bearer <YOUR_API_KEY>"                                       , // L'utiliateur pour profiter de nos services doit s'authentifier avec une clé API.
   }
 })`
   
@@ -233,19 +235,36 @@ const Page = () => {
                 <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
                   <div className="border-b border-r border-b-white/20 border-r-white/10 bg-white/5 px-4 py-2 text-white">
                   pingpanda.js
-              
                 </div>
                 </div>
                </div> 
 
                   <div className="overflow-hidden">
-                    <div className="max-h-[30rem]">
-                        
+                    <div className="max-h-[30rem] ">
+                        <SyntaxHighlighter 
+                          language="typescript" 
+                          style={{
+                            ...oneDark, 
+                            'pre[class*="language-"]': {
+                            ...oneDark['pre[class*="language-"]'], 
+                            background:"transparent",
+                            overflow:"hidden",
+                          },
+                            'code[class*="language-"]': {
+                            ...oneDark['code[class*="language-"]'], 
+                            background:"transparent",
+                          },
+                        }}
+                        >
+                          {codeSnippet}           
+                        </SyntaxHighlighter>
                     </div>
                 </div>
               </div>
            </div>
         </div>
+
+        
        </div>
      </div>
        </MaxWidthWrapper>
