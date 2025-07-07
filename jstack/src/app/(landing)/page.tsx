@@ -8,6 +8,8 @@ import { DiscordMessage } from "@/components/discord-message"; // Importation du
 import Image from "next/image"; // Importation du composant Image de Next.js pour afficher les images de manière optimisée par exemple pour le chargement paresseux et la gestion des tailles d'image
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'; // Importation du composant Prism pour la coloration syntaxique du code
 import { oneDark  } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Star} from "lucide-react";
+import { Icons } from "@/components/icons";
 
 const Page = () => {
   const codeSnippet = `await fetch("http://localhost:3000/api/v1/events", {      // On utilise fetch pour envoyer une requête POST à l'API pour enregistrer un événement.
@@ -264,12 +266,92 @@ const Page = () => {
            </div>
         </div>
 
-        
+        <div className="pointer-events-none absolute inset-px rounded-lg shadow ring-1 ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"/>
        </div>
      </div>
        </MaxWidthWrapper>
       </section>
-     <section></section>
+
+     <section className="relative py-24 sm:py-32 bg-white">
+      <MaxWidthWrapper className="flex flex-col items-center gap-16 sm:gap-20">
+        <div>
+          <h2 className="text-center text-base/7 font-semibold text-brand-600">
+            Real-World Experiences 
+            </h2>
+          <Heading className="text-center">What our customers say</Heading>
+        </div>
+
+        <div className="mx-auto grid max-w-2xl grid-cols-1 px-4 lg:mx-0 lg:max-w-none lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+          {/* first customer review*/}
+          <div className="flex flex-auto flex-col gap-4 bg-brand-25 p-6 sm:p-8 lg:p-16 rounded-t-[2rem] lg:rounded-tr-none lg:rounded-l-[2rem]">
+            <div className="flex gap-0.5 mb-2 justify-center lg:justify-start">
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              </div>
+              <p className="text-base sm:text-lg lg:text-lg/8 font-medium tracking-tight text-brand-950 text-center lg:text-left text-pretty">
+              PingPanda has been a game-changer for me. I've been using it for two months now and seeing sales pop up in real-time is super satisfying. 
+              </p>
+              <div className="flex flex-col justify-center lg:justify-start sm:flex-row items-center sm:items-start gap-4 mt-2">
+                <Image 
+                  src="/user-2.png" 
+                  className="rounded-full object-cover" 
+                  alt="Random user"
+                  width={48}
+                  height={48}
+                  />
+                  <div className="flex flex-col items-center sm:items-start">
+                    <p className="font-semibold flex items-center">
+                      Maria Vanela
+                      <Icons.verificationBadge className="size-4 inline-block ml-1.5"/> {/* Ici, on utilise une balise <p> pour afficher le nom de l'utilisateur "Temari Vanela". La classe font-semibold applique une graisse de police semi-grasse, et flex items-center aligne les éléments horizontalement. Icons.verificationBadge est un composant qui représente une icône de badge de vérification. */}
+                     </p>
+                     <p className="text-sm text-gray-600">@itsmaria</p>
+                     </div>
+                </div>
+            </div>
+
+          {/* second customer review */}
+            <div className="flex flex-auto flex-col gap-4 bg-brand-25 p-6 sm:p-8 lg:p-16 rounded-b-[2rem] lg:rounded-bl-none lg:rounded-r-[2rem]">
+            <div className="flex gap-0.5 mb-2 justify-center lg:justify-start">
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              <Star className="size-5 text-brand-600 fill-brand-600" />
+              </div>
+              <p className="text-base sm:text-lg lg:text-lg/8 font-medium tracking-tight text-brand-950 text-center lg:text-left text-pretty">
+              PingPanda's been paying off our Saas. Nice to have simple way to see how we're doing day-to-day. Definitely makes our lives easier. 
+              </p>
+
+              <div className="flex flex-col justify-center lg:justify-start sm:flex-row items-center sm:items-start gap-4 mt-2">
+                <Image 
+                  src="/user-1.png" 
+                  className="rounded-full object-cover" 
+                  alt="Random user"
+                  width={48}
+                  height={48}
+                  />
+                  <div className="flex flex-col items-center sm:items-start">
+                    <p className="font-semibold flex items-center">
+                      Sean Philipps
+                      <Icons.verificationBadge className="size-4 inline-block ml-1.5"/> {/* Ici, on utilise une balise <p> pour afficher le nom de l'utilisateur "Temari Vanela". La classe font-semibold applique une graisse de police semi-grasse, et flex items-center aligne les éléments horizontalement. Icons.verificationBadge est un composant qui représente une icône de badge de vérification. */}
+                     </p>
+                     <p className="text-sm text-gray-600">@seanphilipps_</p>
+                     </div>
+                </div>
+            </div>
+        </div>
+
+        <ShinyButton 
+          href="/sign-up" 
+          className="relative z-10 h-14 w-full max-w-xs text-base shadow-lg transition-shadow duration-300 hover:shadow-xl"
+          >
+            Start For Free Today
+          </ShinyButton> {/* Ici, on utilise le composant ShinyButton pour créer un bouton stylisé. La classe relative z-10 positionne le bouton au-dessus des autres éléments, h-14 définit la hauteur du bouton à 14 unités, w-full permet au bouton de prendre toute la largeur disponible, max-w-xs limite la largeur maximale du bouton à "xs" (extra small), text-base définit la taille du texte à 1 unité, shadow-lg ajoute une ombre portée au bouton, et transition-shadow duration-300 hover:shadow-xl ajoute une transition d'ombre lors du survol du bouton. */}
+        </MaxWidthWrapper>
+     </section>
   </>
   )
 }
