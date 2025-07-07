@@ -27,8 +27,10 @@ export default function RootLayout({                                  // Défini
   return (                                                                  // Le composant RootLayout retourne un élément HTML qui enveloppe l'ensemble de l'application. Il utilise le composant ClerkProvider pour gérer l'authentification des utilisateurs, et définit la langue de la page ainsi que les classes CSS pour les polices et le style général de la page.
     <ClerkProvider>
     <html lang="en" className={cn(inter.variable, eb_garamond.variable)}>   {/* Le composant <html> définit la langue de la page (lang="en" pour l'anglais) et applique les classes CSS pour les polices importées. La fonction cn est utilisée pour combiner les classes CSS en une seule chaîne. */}
-      <body className="font-sans bg-brand-50 text-brand-950 antialiased">
+      <body className="min-h-[calc(100vh-1px)] flex flex-col font-sans bg-brand-50 text-brand-950 antialiased">
+        <main className="relative flex-1 flex flex-col">
         <Providers>{children}</Providers>                                   {/* <Providers>{children}</Providers> est utilisé pour envelopper le contenu de l'application avec des fournisseurs(providers) React, ce qui permet de partager des données et des fonctionnalités entre les composants. Cela peut inclure des contextes, des thèmes, ou d'autres fonctionnalités globales. Les providers sont des composants qui fournissent des données ou des fonctionnalités à tous les composants enfants. Par exemple, le composant Providers peut inclure des fournisseurs pour la gestion de l'état, l'authentification (ClerkProvider), ou d'autres fonctionnalités globales de l'application. */}
+      </main>
       </body>
     </html>
     </ClerkProvider>
