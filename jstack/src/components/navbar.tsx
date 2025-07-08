@@ -3,9 +3,10 @@ import { MaxWidthWrapper } from "./max-width-wrapper";
 import {SignOutButton} from "@clerk/nextjs";
 import { Button, buttonVariants } from "./ui/button"; // Importation du composant Button pour les boutons stylisés
 import { ArrowRight } from "lucide-react"; // Importation de l'icône ArrowRight de la bibliothèque lucide-react pour les flèches
+import { currentUser } from "@clerk/nextjs/server";
 
-export const Navbar = () => {                          // Ici, on crée un composant Navbar qui sera utilisé pour afficher la barre de navigation en haut de la page. Ce composant est une fonction fléchée qui retourne du JSX, le langage de balisage utilisé par React pour décrire l'interface utilisateur.
-    const user = false;                                 // On veut dés la barre de navigation afficher le statut de l'utilisatuer. On crée alors ici "un mock" en d'autre terme on hardcode pour que navigateur agissse et affiche la page comme quand l'utilisateur est connecté. On initialise une variable user à true, ce qui signifie que l'utilisateur est  connecté. Cela peut être utilisé plus tard pour afficher des liens de connexion ou de déconnexion en fonction de l'état de l'utilisateur. Ici le bouton "sign out" sera affiché si l'utilisateur est connecté.  
+export const Navbar = async () => {                          // Ici, on crée un composant Navbar qui sera utilisé pour afficher la barre de navigation en haut de la page. Ce composant est une fonction asynchrone car il utilise la fonction currentUser pour récupérer les informations de l'utilisateur connecté. async signifie que cette fonction peut contenir des opérations asynchrones, comme des appels à des API ou des requêtes de base de données, et peut utiliser await pour attendre leur résolution.
+    const user = await currentUser()                                 // currentUser est une fonction asynchrone qui récupère les informations de l'utilisateur actuellement connecté. Elle renvoie un objet utilisateur si l'utilisateur est connecté, ou null si aucun utilisateur n'est connecté. await est utilisé pour attendre la résolution de cette promesse avant de continuer l'exécution du code. Cela permet d'obtenir les informations de l'utilisateur avant de rendre le composant Navbar.
     
     return (
          <nav className="sticky z-[100] h-16 inset-x-0 top-0 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg transition-all">
