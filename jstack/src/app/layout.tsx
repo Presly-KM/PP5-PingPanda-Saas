@@ -30,7 +30,7 @@ export default function RootLayout({                                  // Défini
       <body className="min-h-[calc(100vh-1px)] flex flex-col font-sans bg-brand-50 text-brand-950 antialiased">
         <main className="relative flex-1 flex flex-col">
         <Providers>{children}</Providers>                                   {/* <Providers>{children}</Providers> est utilisé pour envelopper le contenu de l'application avec des fournisseurs(providers) React, ce qui permet de partager des données et des fonctionnalités entre les composants. Cela peut inclure des contextes, des thèmes, ou d'autres fonctionnalités globales. Les providers sont des composants qui fournissent des données ou des fonctionnalités à tous les composants enfants. Par exemple, le composant Providers peut inclure des fournisseurs pour la gestion de l'état, l'authentification (ClerkProvider), ou d'autres fonctionnalités globales de l'application. */}
-      </main>
+        </main>
       </body>
     </html>
     </ClerkProvider>
