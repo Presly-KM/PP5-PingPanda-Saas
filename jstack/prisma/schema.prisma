@@ -1,34 +1,66 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+generator client {                                // Le générateur client est utilisé pour générer le client Prisma qui sera utilisé dans votre application pour interagir avec la base de données. Par exemple, si vous utilisez Node.js, Prisma générera un client JavaScript ou TypeScript que vous pourrez utiliser pour effectuer des requêtes sur votre base de données.
+  provider        = "prisma-client-js"            // Le provider spécifie le type de client à générer. Dans ce cas, nous utilisons le client JavaScript.
+  previewFeatures = ["driverAdapters"]            // Les fonctionnalités expérimentales de Prisma sont activées ici. "driverAdapters" permet d'utiliser des adaptateurs de pilote pour interagir avec la base de données.
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+datasource db {                                  // La source de données est la configuration de la base de données que Prisma utilisera pour se connecter.
+  provider = "postgresql"                        // Le provider spécifie le type de base de données que vous utilisez. Dans ce cas, nous utilisons PostgreSQL.
+  url      = env("DATABASE_URL")                 // L'URL de la base de données est récupérée à partir d'une variable d'environnement. Cela permet de garder les informations sensibles, comme les identifiants de connexion à la base de données, hors du code source.
 }
 
-enum Plan {
-  FREE 
-  PRO
+enum Plan {                                       // Un enum (énumération) est un type de données qui permet de définir un ensemble de valeurs possibles. Ici, nous définissons un enum pour les plans d'abonnement des utilisateurs. Par exemple, si vous avez différents niveaux de service ou de fonctionnalités, vous pouvez les représenter avec un enum. Ainsi, vous pouvez facilement gérer les différents plans d'abonnement dans votre application.
+  FREE                                            // Le plan gratuit, qui peut avoir des limitations sur les fonctionnalités ou l'utilisation.
+  PRO                                             // Le plan professionnel, qui peut offrir plus de fonctionnalités ou une utilisation accrue par rapport au plan gratuit.
 }
 
 model User {
-  id         String @ id @default(cuid())
-  externalId String? @unique
+  id         String @id @default(cuid())     // Ici on utilise cuid() pour générer un identifiant unique. En effet, cuid() est une fonction qui génère un identifiant unique basé sur le temps et l'ID de la machine, ce qui le rend très adapté pour les applications distribuées. cuid() est souvent préféré à d'autres méthodes de génération d'ID, comme les UUID, car il est plus court et plus lisible. Il est également conçu pour être unique dans le temps et l'espace, ce qui signifie que vous n'aurez pas de collisions d'ID même si plusieurs instances de votre application génèrent des IDs en même temps.
+  externalId String? @unique                 // L'ID externe est un identifiant unique qui peut être utilisé pour lier l'utilisateur à un système externe, comme un service d'authentification tiers. Il est optionnel, car tous les utilisateurs n'auront pas nécessairement un ID externe. Par exemple, si vous utilisez OAuth pour l'authentification, l'ID externe pourrait être l'ID de l'utilisateur dans le service OAuth.
 
-  quotaLimit Int
-  plan       Plan @defautl(FREE)
+  quotaLimit Int                             // quotaLimit est un champ qui peut être utilisé pour limiter le nombre de requêtes ou d'actions qu'un utilisateur peut effectuer dans votre application. Par exemple, si vous avez un service qui facture en fonction de l'utilisation, vous pouvez utiliser quotaLimit pour suivre combien d'actions un utilisateur a effectuées. Cela peut être utile pour gérer les ressources et éviter les abus. "Int" est un type de données qui représente un entier, donc quotaLimit stockera un nombre entier.
+  plan       Plan @default(FREE)             // Le plan est un champ qui indique le type d'abonnement de l'utilisateur. Il utilise l'énumération Plan que nous avons définie plus haut. Par défaut, il est défini sur FREE, ce qui signifie que si un utilisateur n'a pas de plan spécifié, il sera considéré comme ayant le plan gratuit.
 
-  email     String   @unique
-  apiKey    String   @unique @default(cuid())
-  discordId String? 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  email     String   @unique                     // L'email est un champ qui stocke l'adresse e-mail de l'utilisateur. Il est marqué comme unique, ce qui signifie qu'aucun deux utilisateurs ne peuvent avoir la même adresse e-mail dans la base de données. Cela est important pour l'identification des utilisateurs et pour éviter les doublons.
+  apiKey    String   @unique @default(cuid())     // L'apiKey est un champ qui stocke une clé API unique pour l'utilisateur. Cette clé peut être utilisée pour authentifier les requêtes de l'utilisateur dans votre application. Elle est également marquée comme unique, ce qui signifie que deux utilisateurs ne peuvent avoir la même clé API. Ici La clé API est générée par défaut en utilisant la fonction cuid(), ce qui garantit qu'elle est unique et sécurisée.
+  discordId String?                               // Le discordId est un champ optionnel qui peut être utilisé pour stocker l'ID d'un utilisateur sur Discord. Cela peut être utile si vous souhaitez intégrer votre application avec Discord, par exemple pour envoyer des notifications ou des messages à l'utilisateur via un bot Discord.
+  createdAt DateTime @default(now())              // createdAt est un champ qui stocke la date et l'heure de création de l'utilisateur. Il est défini par défaut sur la date et l'heure actuelles lorsque l'utilisateur est créé, en utilisant la fonction now(). Cela permet de garder une trace de quand chaque utilisateur a été ajouté à votre application.
+  updatedAt DateTime @updatedAt                   // updatedAt est un champ qui stocke la date et l'heure de la dernière mise à jour de l'utilisateur. Il est automatiquement mis à jour chaque fois que l'enregistrement de l'utilisateur est modifié, grâce à l'attribut @updatedAt. Cela permet de suivre les modifications apportées à l'utilisateur au fil du temps.
 
-  @@index([email, apiKey])
+  EventCategories EventCategory[]                   // EventCategory est une relation entre le modèle User et le modèle EventCategory. Cela signifie qu'un utilisateur peut avoir plusieurs catégories d'événements associées à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement peut être associé à une catégorie spécifique, et cette relation permet de gérer ces associations.
+
+  events Event[]                                   // Ici, nous avons une relation entre le modèle User et le modèle Event. Cela signifie qu'un utilisateur peut avoir plusieurs événements associés à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement sera lié à cet utilisateur. Cela permet de gérer les événements créés par chaque utilisateur de manière structurée. cf ligne 60
+
+  @@index([email, apiKey])                        // Cet index est créé pour améliorer les performances des requêtes qui filtrent ou trient par email et apiKey. Les index sont utilisés pour accélérer les recherches dans la base de données, en permettant à Prisma de trouver rapidement les enregistrements correspondants sans avoir à parcourir toute la table. Ainsi, il suffit de créer un index sur les champs email et apiKey pour optimiser les requêtes qui utilisent ces champs. Ainsi si jamais je recherche un utilisateur par son email ou sa clé API, Prisma utilisera cet index pour trouver l'utilisateur plus rapidement.
 }
 
+model EventCategory {
+  id          String @id @default(cuid())    // L'ID de la catégorie d'événement, généré automatiquement avec cuid().
+  name        String                         // Le nom de la catégorie d'événement, qui est une chaîne de caractères. Par exemple, cela pourrait être "Conférence", "Atelier", etc.
+  color       Int                            // La couleur de la catégorie d'évenement, stockée sous forme d'entier. Cela peut être utilisé pour représenter une couleur en utilisant un code hexadécimal ou RGB.
+  emoji       String?                        // Un emoji optionnel associé à la catégorie d'évenement, qui peut être utilisé pour une représentation visuelle.
+ 
+  user        User  @relation(fields: [userId], references: [id]) // Une relation avec le modèle User, indiquant que chaque catégorie d'événement est créée par un utilisateur spécifique.
+  userId      String                         // L'ID de l'utilisateur qui a créé la catégorie d'évenement, utilisé pour établir une relation avec le modèle User.
+
+  createdAt   DateTime @default(now())       // La date et l'heure de création de la la catégorie d'évenement, définie par défaut à la date et l'heure actuelles.
+  updatedAt   DateTime @updatedAt            // La date et l'heure de la dernière mise à jour de la catégorie, automatiquement mise à jour chaque fois que l'enregistrement est modifié.  
+  
+  @@unique([name, userId])                // Un index unique sur le nom de la catégorie et l'ID de l'utilisateur, garantissant qu'un utilisateur ne peut pas avoir deux catégories d'événements avec le même nom. Cela permet d'éviter les doublons dans les catégories d'événements pour chaque utilisateur.
+
+  }
+
+  model Event {
+    id               String @id @default(cuid())    // L'ID de l'événement, généré automatiquement avec cuid().     
+    formattedMessage String                // Le message formaté de l'événement, qui peut être utilisé pour afficher des informations sur l'événement dans une interface utilisateur ou pour des notifications.       
+  
+    user   User    @relation(fields: [userId], references: [id])  //Ici, nous avons une relation avec le modèle User, indiquant que chaque événement est créé par un utilisateur spécifique. Cela permet de lier les événements à l'utilisateur qui les a créés. (cf ligne 34)
+    userId String                         // L'ID de l'utilisateur qui a créé l'événement, utilisé pour établir une relation avec le modèle User.
+    
+    name      String                         // Le nom de l'événement, qui est une chaîne de caractères. Par exemple, cela pourrait être "Lancement de produit", "Réunion d'équipe", etc. 
+    fields    Json                       // Les champs de l'événement, stockés sous forme de JSON. Cela permet de stocker des informations supplémentaires sur l'événement, comme les participants, la date, l'heure, etc.
+    
+    deliveryStatus 
+  }
