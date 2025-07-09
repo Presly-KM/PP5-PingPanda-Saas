@@ -30,9 +30,8 @@ model User {
   updatedAt DateTime @updatedAt                   // updatedAt est un champ qui stocke la date et l'heure de la dernière mise à jour de l'utilisateur. Il est automatiquement mis à jour chaque fois que l'enregistrement de l'utilisateur est modifié, grâce à l'attribut @updatedAt. Cela permet de suivre les modifications apportées à l'utilisateur au fil du temps.
 
   EventCategories EventCategory[]                   // EventCategory est une relation entre le modèle User et le modèle EventCategory. Cela signifie qu'un utilisateur peut avoir plusieurs catégories d'événements associées à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement peut être associé à une catégorie spécifique, et cette relation permet de gérer ces associations.
-
-  events Event[]                                   // Ici, nous avons une relation entre le modèle User et le modèle Event. Cela signifie qu'un utilisateur peut avoir plusieurs événements associés à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement sera lié à cet utilisateur. Cela permet de gérer les événements créés par chaque utilisateur de manière structurée. cf ligne 60
-
+  Event           Event[]                                   // Ici, nous avons une relation entre le modèle User et le modèle Event. Cela signifie qu'un utilisateur peut avoir plusieurs événements associés à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement sera lié à cet utilisateur. Cela permet de gérer les événements créés par chaque utilisateur de manière structurée. cf ligne 60
+  Quota           Quota[]
   @@index([email, apiKey])                        // Cet index est créé pour améliorer les performances des requêtes qui filtrent ou trient par email et apiKey. Les index sont utilisés pour accélérer les recherches dans la base de données, en permettant à Prisma de trouver rapidement les enregistrements correspondants sans avoir à parcourir toute la table. Ainsi, il suffit de créer un index sur les champs email et apiKey pour optimiser les requêtes qui utilisent ces champs. Ainsi si jamais je recherche un utilisateur par son email ou sa clé API, Prisma utilisera cet index pour trouver l'utilisateur plus rapidement.
 }
 
@@ -45,14 +44,22 @@ model EventCategory {
   user        User  @relation(fields: [userId], references: [id]) // Une relation avec le modèle User, indiquant que chaque catégorie d'événement est créée par un utilisateur spécifique.
   userId      String                         // L'ID de l'utilisateur qui a créé la catégorie d'évenement, utilisé pour établir une relation avec le modèle User.
 
+  
+
   createdAt   DateTime @default(now())       // La date et l'heure de création de la la catégorie d'évenement, définie par défaut à la date et l'heure actuelles.
   updatedAt   DateTime @updatedAt            // La date et l'heure de la dernière mise à jour de la catégorie, automatiquement mise à jour chaque fois que l'enregistrement est modifié.  
-  
+  Event       Event[]                        // Relation inverse avec le modèle Event, chaque catégorie peut avoir plusieurs événements associés.
   @@unique([name, userId])                // Un index unique sur le nom de la catégorie et l'ID de l'utilisateur, garantissant qu'un utilisateur ne peut pas avoir deux catégories d'événements avec le même nom. Cela permet d'éviter les doublons dans les catégories d'événements pour chaque utilisateur.
 
   }
 
-  model Event {
+enum DeliveryStatus {                            // Un enum (énumération) est un type de données qui permet de définir un ensemble de valeurs possibles. Ici, nous définissons un enum pour le statut de livraison des événements. Par exemple, cela peut être utilisé pour suivre l'état d'un événement dans le processus de livraison, comme "en attente", "envoyé", "échoué", etc.
+  PENDING  
+  DELIVERED
+  FAILED
+}
+
+model Event {
     id               String @id @default(cuid())    // L'ID de l'événement, généré automatiquement avec cuid().     
     formattedMessage String                // Le message formaté de l'événement, qui peut être utilisé pour afficher des informations sur l'événement dans une interface utilisateur ou pour des notifications.       
   
@@ -62,5 +69,27 @@ model EventCategory {
     name      String                         // Le nom de l'événement, qui est une chaîne de caractères. Par exemple, cela pourrait être "Lancement de produit", "Réunion d'équipe", etc. 
     fields    Json                       // Les champs de l'événement, stockés sous forme de JSON. Cela permet de stocker des informations supplémentaires sur l'événement, comme les participants, la date, l'heure, etc.
     
-    deliveryStatus 
+    deliveryStatus DeliveryStatus @default(PENDING) // Le statut de livraison de l'événement, qui est un enum. Il peut avoir des valeurs comme PENDING (en attente), SENT (envoyé), FAILED (échoué), etc. Cela permet de suivre l'état de l'événement dans le processus de livraison.
+
+    createdAt DateTime @default(now())       // La date et l'heure de création de l'événement, définie par défaut à la date et l'heure actuelles. Cela permet de garder une trace de quand chaque événement a été créé.
+    updatedAt DateTime @updatedAt            // La date et l'heure de la dernière mise
+  
+    EventCategory EventCategory? @relation(fields: [eventCategoryId], references: [id]) // Une relation avec le modèle EventCategory, indiquant que chaque événement peut être associé à une catégorie d'événement spécifique. Cela permet de classer les événements en fonction de leur catégorie.
+    eventCategoryId String?                  // L'ID de la catégorie d'événement associée à l'événement, utilisé pour établir une relation avec le modèle EventCategory. Ce champ est optionnel, car un événement peut ne pas avoir de catégorie associée.  
+  
+    @@index([createdAt])                      // Un index sur le champ createdAt, qui peut être utilisé pour améliorer les performances des requêtes qui filtrent ou trient par date de création. Cela permet à Prisma de trouver rapidement les événements créés à une date spécifique ou dans une plage de dates. Par exemple, si vous souhaitez afficher les événements créés au cours de la dernière semaine, cet index aidera à accélérer cette requête.
   }
+
+model Quota {
+  id        String @id @default(cuid())     // L'ID de la quota, généré automatiquement avec cuid().
+  user      User  @relation(fields: [userId], references: [id]) // Une relation avec le modèle User, indiquant que chaque quota est associé à un utilisateur spécifique.
+  userId    String  @unique                   // L'ID de l'utilisateur auquel le quota est associé, utilisé pour établir une relation avec le modèle User. Ce champ est unique, ce qui signifie qu'un utilisateur ne peut avoir qu'un seul quota associé à lui.
+  
+  limit     Int                            // Le quota limite, qui est un entier représentant la limite d'utilisation pour l'utilisateur. Par exemple, cela peut être le nombre maximum d'événements qu'un utilisateur peut créer ou le nombre maximum de requêtes qu'il peut effectuer dans votre application.
+  
+  year      Int                            // L'année à laquelle le quota s'applique, stockée sous forme d'entier. Cela permet de gérer les quotas annuels pour chaque utilisateur. Par exemple, si vous souhaitez limiter l'utilisation d'un utilisateur à un certain nombre d'événements par an, vous pouvez utiliser ce champ pour suivre l'année en cours.  
+  month     Int                            // Le mois à laquelle le quota s'applique, stockée sous forme d'entier. Cela permet de gérer les quotas mensuels pour chaque utilisateur. Par exemple, si vous souhaitez limiter l'utilisation d'un utilisateur à un certain nombre d'événements par mois, vous pouvez utiliser ce champ pour suivre le mois en cours.
+  count     Int @default(0)                // Le nombre d'événements ou d'actions effectuées par l'utilisateur, initialisé à 0 par défaut. Ce champ est utilisé pour suivre l'utilisation de l'utilisateur par rapport à son quota. Par exemple, si un utilisateur a un quota de 100 événements par mois, ce champ sera incrémenté chaque fois qu'il crée un nouvel événement, et vous pourrez vérifier s'il a atteint ou dépassé son quota en comparant count avec limit.
+
+  updatedAt DateTime @updatedAt            // La date et l'heure de la dernière mise à jour du quota, automatiquement mise à jour chaque fois que l'enregistrement est modifié. Cela permet de suivre les modifications apportées au quota au fil du temps.
+}
