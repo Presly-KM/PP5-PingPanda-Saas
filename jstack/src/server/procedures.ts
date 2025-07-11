@@ -3,7 +3,7 @@ import { j } from "./__internals/j"
 import { currentUser } from "@clerk/nextjs/server"
 import { HTTPException } from "hono/http-exception"
 
-const authMiddleware = j.middleware(async ({ c, next }) => {
+const authMiddleware = j.middleware(async ({ c, next }) => {               // Ici, on crée un middleware d'authentification qui sera utilisé pour vérifier si l'utilisateur est authentifié avant d'accéder aux routes privées de l'application. Ce middleware est une fonction asynchrone qui prend en paramètre le contexte de la requête (c) et la fonction next() qui permet de passer au middleware ou à la route suivante.
   const authHeader = c.req.header("Authorization")
 
   if (authHeader) {
