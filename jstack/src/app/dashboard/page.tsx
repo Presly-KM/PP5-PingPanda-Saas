@@ -1,4 +1,5 @@
 import { DashboardPage } from "@/components/dashboard-page"
+import { DashboardPageContent } from "@/app/dashboard/dashboard-page-content"  // Importation du composant DashboardPageContent qui contient le contenu principal de la page de tableau de bord.
 import { db } from "@/db"
 import { currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
