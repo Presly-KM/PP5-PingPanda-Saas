@@ -3,6 +3,8 @@ import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";    
 import { startOfMonth } from "date-fns"; // Import de la fonction startOfMonth pour manipuler les dates       
 import { z } from "zod"; // Import de la bibliothèque zod pour la validation des schémas de données        
+import { CATEGORY_NAME_VALIDATOR } from "@/lib/validators/category-validator";
+import { parseColor } from "@/utils"; // Import de la fonction parseColor pour convertir les couleurs en entiers
 
 export const categoryRouter = router({                               // Ici on crée un routeur pour les catégories
     getEventCategories: privateProcedure.query(async({ c, ctx}) => { // Ici, on crée une procédure privée qui permet de récupérer les catégories d'événements de l'utilisateur. Cette procédure est accessible uniquement aux utilisateurs authentifiés grâce au middleware d'authentification utilisé dans privateProcedure. "c" est le contexte de la requête c'est-à-dire les informations de la requête HTTP, par exemple les en-têtes, les paramètres de la requête, etc. par exemple, on peut utiliser c.req.query pour accéder aux paramètres de la requête. "ctx" est le contexte de l'application, c'est-à-dire les informations globales de l'application, par exemple, les variables d'environnement, les configurations, etc. On peut utiliser ctx.db pour accéder à la base de données. privateProcedure.query est une méthode de Prisma qui permet de créer une requête pour récupérer des données dans la base de données. Cette méthode est utilisée pour créer des requêtes de type GET, c'est-à-dire des requêtes qui récupèrent des données sans les modifier. Elle prend en paramètre une fonction asynchrone qui reçoit le contexte de la requête et le contexte de l'application. Cette fonction doit retourner un objet JSON contenant les données à renvoyer au client.
@@ -75,4 +77,32 @@ export const categoryRouter = router({                               // Ici on c
     
     return c.json({ success: true}) // On renvoie une réponse JSON indiquant que la suppression a réussi.
   }),
+
+  createEventCategory: privateProcedure.input(
+    z.object({  // On définit un schéma d'entrée zod pour valider les données d'entrée de la requête. C'est à dire, on s'assure que l'entrée de la requête contient un champ name de type string, un champ color de type string et un champ emoji de type string. Cela permet de valider les données d'entrée avant de les utiliser dans la requête. Si les données d'entrée ne correspondent pas au schéma, une erreur sera renvoyée au client.
+    name: CATEGORY_NAME_VALIDATOR, // On utilise le schéma de validation CATEGORY_NAME_VALIDATOR importé depuis le fichier category-validator.ts pour valider le nom de la catégorie. Ce schéma s'assure que le nom n'est pas vide, qu'il contient au moins un caractère, et qu'il ne contient que des lettres, des chiffres et des tirets.
+    color: z
+     .string() // On définit un champ color de type string pour la couleur de la catégorie. Ce champ est utilisé pour stocker la couleur associée à la catégorie d'événements.
+     .min(1, "Color is required.") // On ajoute une validation pour s'assurer que le champ color n'est pas vide. Si le champ est vide, une erreur sera renvoyée au client avec le message "Color is required.".
+     .regex(/^#[0-9A-F]{6}$/i, "Invalid color format."), // On ajoute une validation pour s'assurer que le champ color est au format hexadécimal. Si le champ ne correspond pas au format, une erreur sera renvoyée au client avec le message "Invalid color format.".
+    emoji: z.string().emoji("Invalid emoji").optional(), // On définit un champ emoji de type string pour l'emoji de la catégorie. Ce champ est optionnel, c'est-à-dire qu'il peut être vide. On ajoute une validation pour s'assurer que le champ emoji est un emoji valide. Si le champ ne correspond pas à un emoji valide, une erreur sera renvoyée au client avec le message "Invalid emoji".
+  })
+)
+.mutation(async ({ c, ctx, input }) => {   // Ici, on crée une procédure privée qui permet de créer une nouvelle catégorie d'événements pour l'utilisateur. Cette procédure est accessible uniquement aux utilisateurs authentifiés grâce au middleware d'authentification utilisé dans privateProcedure. "c" est le contexte de la requête c'est-à-dire les informations de la requête HTTP, par exemple les en-têtes, les paramètres de la requête, etc. par exemple, on peut utiliser c.req.query pour accéder aux paramètres de la requête. "ctx" est le contexte de l'application, c'est-à-dire les informations globales de l'application, par exemple, les variables d'environnement, les configurations, etc. On peut utiliser ctx.db pour accéder à la base de données. privateProcedure.mutation est une méthode de Prisma qui permet de créer une mutation pour modifier des données dans la base de données. Cette méthode est utilisée pour créer des requêtes de type POST, PUT ou DELETE, c'est-à-dire des requêtes qui modifient des données dans la base de données. Elle prend en paramètre un schéma d'entrée zod pour valider les données d'entrée et une fonction asynchrone qui reçoit le contexte de la requête et le contexte de l'application. Cette fonction doit retourner un objet JSON contenant les données à renvoyer au client.
+    const { user } = ctx // On récupère l'utilisateur authentifié à partir du contexte de l'application. ctx.user est l'utilisateur authentifié récupéré par le middleware d'authentification.
+    const { color, name, emoji } = input // On extrait les champs color, name et emoji de l'entrée de la requête. L'entrée est validée par le schéma zod défini dans la méthode input.  
+
+     // TODO : ADD PAID PLAN LOGIC   
+
+     const eventCategory = await db.eventCategory.create({ // On utilise la méthode create de Prisma pour créer une nouvelle catégorie d'événements pour l'utilisateur. Cette méthode crée un nouvel enregistrement dans la base de données en fonction des données fournies dans l'objet data.
+        data: {                       // On définit les données de la nouvelle catégorie d'événements à créer. 
+            name: name.toLowerCase(), // On convertit le nom de la catégorie en minuscules pour éviter les doublons et assurer une cohérence dans la base de données. Cela permet également de faciliter la recherche et le filtrage des catégories d'événements.
+            color: parseColor(color), // On utilise la fonction parseColor importée depuis utils.ts pour convertir la couleur en un entier. Cette fonction prend une chaîne de caractères représentant une couleur au format hexadécimal et la convertit en un entier. Cela permet de stocker la couleur dans la base de données sous forme d'entier, ce qui est plus efficace en termes de stockage et de performances.
+            emoji,
+            userId: user.id, // On associe la catégorie d'événements à l'utilisateur authentifié en utilisant son ID. Cela permet de s'assurer que chaque utilisateur ne peut accéder qu'à ses propres catégories d'événements.
+     },
+     })
+
+    return c.json({ eventCategory}) // On renvoie une réponse JSON indiquant que la création de la catégorie a réussi.
+}),
 })
