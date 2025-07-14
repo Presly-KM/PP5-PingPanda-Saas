@@ -1,0 +1,8 @@
+import { z } from "zod"                                                       // Zod est une bibliothèque de validation de schémas pour JavaScript et TypeScript. Elle est utilisée pour définir des schémas de validation pour les données, ce qui permet de s'assurer que les données respectent certaines règles avant d'être utilisées dans l'application.
+
+export const CATEGORY_NAME_VALIDATOR = z                           // Le schéma de validation pour le nom d'une catégorie d'événement. Il s'assure que le nom n'est pas vide, qu'il contient au moins un caractère, et qu'il ne contient que des lettres, des chiffres et des tirets.
+.string()                                                          // Le schéma de validation pour le nom d'une catégorie d'événement. Il s'assure que le nom n'est pas vide, qu'il contient au moins un caractère, et qu'il ne contient que des lettres, des chiffres et des tirets.
+.min(1, "Category name is required.")                              // Le schéma de validation pour le nom d'une catégorie d'événement. Il s'assure que le nom n'est pas vide, qu'il contient au moins un caractère, et qu'il ne contient que des lettres, des chiffres et des tirets.
+.regex(/^[a-zA-Z0-9-]+$/, 
+    "Category name can only contain letters, numbers, and hyphens" // Le schéma de validation pour une catégorie d'événement. Il s'assure que le nom de la catégorie n'est pas vide, qu'il contient au moins un caractère, et qu'il ne contient que des lettres, des chiffres et des tirets.
+)
