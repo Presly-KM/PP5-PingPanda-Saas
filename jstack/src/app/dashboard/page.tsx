@@ -26,7 +26,7 @@ const Page = async () => {
          <DashboardPage 
              cta={
             <CreateEventCategoryModal> 
-                <Button> 
+                <Button className="w-full sm:w-fit"> 
                     <PlusIcon className="size-4 mr-2"/>   {/* Le composant DashboardPage est utilisé pour encapsuler le contenu de la page de tableau de bord. Il prend en charge un titre et un CTA (Call To Action) qui peut être personnalisé. Un CTA est un élément interactif qui incite l'utilisateur à effectuer une action, comme cliquer sur un bouton ou un lien. */}
                       Add Category
                 </Button>
