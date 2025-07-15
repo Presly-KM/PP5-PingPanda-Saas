@@ -105,4 +105,19 @@ export const categoryRouter = router({                               // Ici on c
 
     return c.json({ eventCategory}) // On renvoie une réponse JSON indiquant que la création de la catégorie a réussi.
 }),
+
+insertQuickstartCategories: privateProcedure.mutation(async ({ ctx, c }) => { // Ici, on crée une procédure privée qui permet d'insérer des catégories d'événements de démarrage rapide pour l'utilisateur. Cette procédure est accessible uniquement aux utilisateurs authentifiés grâce au middleware d'authentification utilisé dans privateProcedure. "c" est le contexte de la requête c'est-à-dire les informations de la requête HTTP, par exemple les en-têtes, les paramètres de la requête, etc. par exemple, on peut utiliser c.req.query pour accéder aux paramètres de la requête. "ctx" est le contexte de l'application, c'est-à-dire les informations globales de l'application, par exemple, les variables d'environnement, les configurations, etc. On peut utiliser ctx.db pour accéder à la base de données. privateProcedure.mutation est une méthode de Prisma qui permet de créer une mutation pour modifier des données dans la base de données. Cette méthode est utilisée pour créer des requêtes de type POST, PUT ou DELETE, c'est-à-dire des requêtes qui modifient des données dans la base de données. Elle prend en paramètre une fonction asynchrone qui reçoit le contexte de la requête et le contexte de l'application. Cette fonction doit retourner un objet JSON contenant les données à renvoyer au client.
+    const categories = await db.eventCategory.createMany({ // On utilise la méthode createMany de Prisma pour insérer plusieurs catégories d'événements de démarrage rapide pour l'utilisateur. Cette méthode crée plusieurs enregistrements dans la base de données en fonction des données fournies dans l'objet data.
+        data: [
+            { name: "Bug", emoji: "🐛", color: 0xff6b6b},
+            { name: "Sale", emoji: "💰", color: 0xffeb3b},
+            { name: "Question", emoji: "🤔", color: 0x6c5ce7 },
+        ].map((category) => ({           // On utilise la méthode map pour parcourir chaque catégorie d'événements de démarrage rapide et créer un objet contenant les données de la catégorie à insérer dans la base de données.
+            ...category,                 // On utilise l'opérateur de décomposition pour copier les propriétés de la catégorie d'événements de démarrage rapide dans l'objet à insérer dans la base de données.
+            userId: ctx.user.id,         // On associe la catégorie d'événements de démarrage rapide à l'utilisateur authentifié en utilisant son ID. Cela permet de s'assurer que chaque utilisateur ne peut accéder qu'à ses propres catégories d'événements.
+        })),
+    })
+
+    return c.json({ success: true, count: categories.count }) // On renvoie une réponse JSON indiquant que l'insertion des catégories de démarrage rapide a réussi. On inclut également le nombre de catégories insérées dans la réponse pour informer le client du succès de l'opération.
+}),
 })
