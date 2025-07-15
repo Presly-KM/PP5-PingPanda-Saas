@@ -12,6 +12,7 @@ import Link from "next/link"; // Importation du composant Link de Next.js pour c
 import { Button } from "@/components/ui/button"; // Importation du composant Button de l'interface utilisateur pour créer des boutons stylisés dans l'application. Ce composant est utilisé pour créer des boutons d'action dans l'interface utilisateur, comme le bouton "View all" pour afficher tous les événements d'une catégorie ou le bouton de suppression d'une catégorie.
 import { Modal } from "@/components/ui/modal"; // Importation du composant Modal de l'interface utilisateur pour créer des fenêtres modales dans l'application. Ce composant est utilisé pour afficher des dialogues ou des confirmations, comme la confirmation de suppression d'une catégorie d'événements.
 import { useQueryClient } from "@tanstack/react-query"; // Importation du hook useQueryClient de React Query pour accéder au client de requêtes. Ce hook est utilisé pour interagir avec le cache des requêtes et effectuer des opérations comme l'invalidation des données mises en cache ou la mise à jour des données après une mutation.
+import { DashboardEmptyState } from "./dashboard-empty-state";
 
 export const DashboardPageContent = () => {                // Ici, on crée un composant DashboardPageContent qui sera utilisé pour afficher le contenu de la page de tableau de bord. Ce composant est une fonction fléchée qui ne prend pas de paramètres. Il sera utilisé pour encapsuler le contenu principal de la page de tableau de bord, comme les statistiques, les graphiques, les listes d'éléments, etc.
   const [deletingCategory, setDeletingCategory] = useState<string | null>(null); // Ici, on utilise le hook useState de React pour créer un état local pour stocker l'ID de la catégorie en cours de suppression. L'état est initialisé à null, ce qui signifie qu'aucune catégorie n'est en cours de suppression au départ. Lorsque l'utilisateur clique sur le bouton de suppression d'une catégorie, l'ID de cette catégorie sera stocké dans cet état pour pouvoir effectuer la suppression.
@@ -45,7 +46,7 @@ export const DashboardPageContent = () => {                // Ici, on crée un c
    }
 
    if(!categories || categories.length === 0) {  // Ici, on vérifie si la variable categories est définie et si elle contient des catégories. Si categories est undefined ou si sa longueur est égale à 0, cela signifie qu'il n'y a pas de catégories d'événements à afficher.
-      return <div>empty state</div>
+      return <DashboardEmptyState/>
    }
 
    return ( 
