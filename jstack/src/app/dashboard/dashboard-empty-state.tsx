@@ -46,7 +46,7 @@ export const DashboardEmptyState = () => {
                 <span>{isPending ? "Creating..." : "Quickstart"}</span>
             </Button>
 
-            <CreateEventCategoryModal>
+            <CreateEventCategoryModal containerClassName="w-full sm:w-auto">
                 <Button className="flex items-center space-x-2 w-full sm:w-auto">
                     <span> Add Category</span>
                 </Button>
