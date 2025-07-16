@@ -2,6 +2,7 @@ import { currentUser} from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { DashboardPage } from "@/components/dashboard-page"
+import { CategoryPageContent } from "@/app/dashboard/category/[name]/category-page-content"
 
 
 interface PageProps {
@@ -46,7 +47,9 @@ const Page = async ({ params }: PageProps) => {
           const hasEvents = category._count.events > 0
 
           return ( 
-            <DashboardPage title={`${category.emoji} ${category.name} events`}></DashboardPage>
+            <DashboardPage title={`${category.emoji} ${category.name} events`}>
+              <CategoryPageContent hasEvents={hasEvents} category={category}/>
+            </DashboardPage>
           )
 
 }
