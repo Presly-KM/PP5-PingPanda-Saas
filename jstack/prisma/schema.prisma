@@ -30,7 +30,7 @@ model User {
   updatedAt DateTime @updatedAt                   // updatedAt est un champ qui stocke la date et l'heure de la dernière mise à jour de l'utilisateur. Il est automatiquement mis à jour chaque fois que l'enregistrement de l'utilisateur est modifié, grâce à l'attribut @updatedAt. Cela permet de suivre les modifications apportées à l'utilisateur au fil du temps.
 
   EventCategories EventCategory[]                   // EventCategory est une relation entre le modèle User et le modèle EventCategory. Cela signifie qu'un utilisateur peut avoir plusieurs catégories d'événements associées à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement peut être associé à une catégorie spécifique, et cette relation permet de gérer ces associations.
-  Event           Event[]                                   // Ici, nous avons une relation entre le modèle User et le modèle Event. Cela signifie qu'un utilisateur peut avoir plusieurs événements associés à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement sera lié à cet utilisateur. Cela permet de gérer les événements créés par chaque utilisateur de manière structurée. cf ligne 60
+  events           Event[]                                   // Event est une relation entre le modèle User et le modèle Event. Cela signifie qu'un utilisateur peut avoir plusieurs événements associés à lui. Par exemple, si un utilisateur crée des événements dans votre application, chaque événement sera lié à cet utilisateur.
   Quota           Quota[]
   @@index([email, apiKey])                        // Cet index est créé pour améliorer les performances des requêtes qui filtrent ou trient par email et apiKey. Les index sont utilisés pour accélérer les recherches dans la base de données, en permettant à Prisma de trouver rapidement les enregistrements correspondants sans avoir à parcourir toute la table. Ainsi, il suffit de créer un index sur les champs email et apiKey pour optimiser les requêtes qui utilisent ces champs. Ainsi si jamais je recherche un utilisateur par son email ou sa clé API, Prisma utilisera cet index pour trouver l'utilisateur plus rapidement.
 }
@@ -48,7 +48,8 @@ model EventCategory {
 
   createdAt   DateTime @default(now())       // La date et l'heure de création de la la catégorie d'évenement, définie par défaut à la date et l'heure actuelles.
   updatedAt   DateTime @updatedAt            // La date et l'heure de la dernière mise à jour de la catégorie, automatiquement mise à jour chaque fois que l'enregistrement est modifié.  
-  Event       Event[]                        // Relation inverse avec le modèle Event, chaque catégorie peut avoir plusieurs événements associés.
+  events       Event[]                        // Une relation avec le modèle Event, indiquant que chaque catégorie d'événement peut être associée à plusieurs événements. Cela permet de classer les événements en fonction de leur catégorie.
+  
   @@unique([name, userId])                // Un index unique sur le nom de la catégorie et l'ID de l'utilisateur, garantissant qu'un utilisateur ne peut pas avoir deux catégories d'événements avec le même nom. Cela permet d'éviter les doublons dans les catégories d'événements pour chaque utilisateur.
 
   }
