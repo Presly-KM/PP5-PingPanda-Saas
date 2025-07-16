@@ -17,7 +17,8 @@ import { DashboardEmptyState } from "./dashboard-empty-state";
 export const DashboardPageContent = () => {                // Ici, on crée un composant DashboardPageContent qui sera utilisé pour afficher le contenu de la page de tableau de bord. Ce composant est une fonction fléchée qui ne prend pas de paramètres. Il sera utilisé pour encapsuler le contenu principal de la page de tableau de bord, comme les statistiques, les graphiques, les listes d'éléments, etc.
   const [deletingCategory, setDeletingCategory] = useState<string | null>(null); // Ici, on utilise le hook useState de React pour créer un état local pour stocker l'ID de la catégorie en cours de suppression. L'état est initialisé à null, ce qui signifie qu'aucune catégorie n'est en cours de suppression au départ. Lorsque l'utilisateur clique sur le bouton de suppression d'une catégorie, l'ID de cette catégorie sera stocké dans cet état pour pouvoir effectuer la suppression.
   const queryClient = useQueryClient() // Ici, on utilise le hook useQueryClient de React Query pour obtenir une instance du client de requêtes. Ce client est utilisé pour gérer les requêtes et les mutations dans l'application, comme la récupération des catégories d'événements de l'utilisateur ou la suppression d'une catégorie. Il permet également de mettre en cache les données et de gérer les états de chargement et d'erreur des requêtes.
-  const { data:categories, isPending: isEventCategoriesLoading } = useQuery({                                 // Ici, on utilise le hook useQuery de React Query pour effectuer une requête asynchrone. Ce hook est utilisé pour récupérer des données depuis une API ou une base de données et les mettre en cache pour une utilisation ultérieure. Il prend un objet en paramètre qui contient les options de la requête.
+  
+  const { data: categories, isPending: isEventCategoriesLoading } = useQuery({                                 // Ici, on utilise le hook useQuery de React Query pour effectuer une requête asynchrone. Ce hook est utilisé pour récupérer des données depuis une API ou une base de données et les mettre en cache pour une utilisation ultérieure. Il prend un objet en paramètre qui contient les options de la requête.
           queryKey: ["user-event-categories"],             // Ici, on définit la clé de la requête, qui est un tableau contenant une chaîne de caractères. Cette clé est utilisée pour identifier la requête dans le cache de React Query. Dans ce cas, la clé est "user-event-categories", ce qui signifie que cette requête est liée aux catégories d'événements de l'utilisateur.
           queryFn: async () => {                         
             const res = await client.category.getEventCategories.$get()  // Ici, on effectue une requête GET vers l'API pour récupérer les catégories d'événements de l'utilisateur. Le client API est utilisé pour envoyer la requête à l'API définie dans le routeur de l'application. La méthode $get() est utilisée pour effectuer une requête GET vers la route getEventCategories du routeur categoryRouter.
@@ -94,7 +95,7 @@ export const DashboardPageContent = () => {                // Ici, on crée un c
 
            <div className="flex items-center justify-between mt-4">
             <Link 
-              href={`/dashboard/categories/${category.name}`} 
+              href={`/dashboard/category/${category.name}`} 
               className={buttonVariants({ 
                 variant: "outline", 
                 size: "sm", 
