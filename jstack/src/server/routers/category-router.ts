@@ -5,6 +5,7 @@ import { startOfMonth } from "date-fns"; // Import de la fonction startOfMonth p
 import { z } from "zod"; // Import de la bibliothèque zod pour la validation des schémas de données        
 import { CATEGORY_NAME_VALIDATOR } from "@/lib/validators/category-validator";
 import { parseColor } from "@/utils"; // Import de la fonction parseColor pour convertir les couleurs en entiers
+import { HTTPException } from "hono/http-exception";
 
 export const categoryRouter = router({                               // Ici on crée un routeur pour les catégories
     getEventCategories: privateProcedure.query(async({ c, ctx}) => { // Ici, on crée une procédure privée qui permet de récupérer les catégories d'événements de l'utilisateur. Cette procédure est accessible uniquement aux utilisateurs authentifiés grâce au middleware d'authentification utilisé dans privateProcedure. "c" est le contexte de la requête c'est-à-dire les informations de la requête HTTP, par exemple les en-têtes, les paramètres de la requête, etc. par exemple, on peut utiliser c.req.query pour accéder aux paramètres de la requête. "ctx" est le contexte de l'application, c'est-à-dire les informations globales de l'application, par exemple, les variables d'environnement, les configurations, etc. On peut utiliser ctx.db pour accéder à la base de données. privateProcedure.query est une méthode de Prisma qui permet de créer une requête pour récupérer des données dans la base de données. Cette méthode est utilisée pour créer des requêtes de type GET, c'est-à-dire des requêtes qui récupèrent des données sans les modifier. Elle prend en paramètre une fonction asynchrone qui reçoit le contexte de la requête et le contexte de l'application. Cette fonction doit retourner un objet JSON contenant les données à renvoyer au client.
@@ -120,4 +121,30 @@ insertQuickstartCategories: privateProcedure.mutation(async ({ ctx, c }) => { //
 
     return c.json({ success: true, count: categories.count }) // On renvoie une réponse JSON indiquant que l'insertion des catégories de démarrage rapide a réussi. On inclut également le nombre de catégories insérées dans la réponse pour informer le client du succès de l'opération.
 }),
+
+pollCategory: privateProcedure
+  .input(z.object({ name: CATEGORY_NAME_VALIDATOR }))
+  .query(async ({c, ctx, input}) => {
+   const { name } = input // On extrait le nom de la catégorie à partir de l'entrée de la requête. L'entrée est validée par le schéma zod défini dans la méthode input.
+   const category = await db.eventCategory.findUnique({ // On utilise la méthode findUnique de Prisma pour récupérer une catégorie d'événements unique en fonction du nom et de l'ID de l'utilisateur authentifié. Cette méthode renvoie un seul enregistrement de la base de données correspondant aux critères spécifiés dans l'objet where.
+        where: { name_userId: { name, userId: ctx.user.id } }, // On filtre la catégorie à récupérer en fonction du nom et de l'ID de l'utilisateur authentifié. Cela permet de s'assurer que l'utilisateur ne peut accéder qu'à ses propres catégories d'événements.
+        include: {
+            _count: {   
+                select: { 
+                    events: true, // On inclut le nombre d'événements associés à la catégorie dans la réponse. Cela permet de savoir combien d'événements sont associés à la catégorie sans avoir à effectuer une requête supplémentaire.
+                },  
+            },
+        },
+    })
+
+    if (!category) { 
+        throw new HTTPException(404, { 
+            message: `Category "${name}" not found.`,   // On lance une exception HTTP 404 si la catégorie n'est pas trouvée. Cela permet de renvoyer une réponse d'erreur au client avec un message indiquant que la catégorie n'a pas été trouvée.        
+        })
+    }
+
+    const hasEvents = category._count.events > 0 // On vérifie si la catégorie a des événements associés en comparant le nombre d'événements avec zéro. Si le nombre d'événements est supérieur à zéro, cela signifie que la catégorie a des événements associés.
+    
+    return c.json({ hasEvents })    
+}), 
 })
