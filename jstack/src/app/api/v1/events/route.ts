@@ -15,15 +15,15 @@ const REQUEST_VALIDATOR = z
 
 export const POST = async (req: NextRequest) => {
   try {
-    const authHeader = req.headers.get("Authorization")
+      const authHeader = req.headers.get("Authorization")
 
+      
     if (!authHeader) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
     if (!authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        {
+      return NextResponse.json({
           message: "Invalid auth header format. Expected: 'Bearer [API_KEY]'",
         },
         { status: 401 }
@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest) => {
       where: { apiKey },
       include: { EventCategories: true },
     })
-
+    
     if (!user) {
       return NextResponse.json({ message: "Invalid API key" }, { status: 401 })
     }
@@ -54,7 +54,7 @@ export const POST = async (req: NextRequest) => {
       )
     }
 
-    // ACTUAL LOGIC
+     // ACTUAL LOGIC
     const currentData = new Date()
     const currentMonth = currentData.getMonth() + 1
     const currentYear = currentData.getFullYear()
@@ -67,7 +67,7 @@ export const POST = async (req: NextRequest) => {
       },
     })
 
-    const quotaLimit =
+     const quotaLimit =
       user.plan === "FREE"
         ? FREE_QUOTA.maxEventsPerMonth
         : PRO_QUOTA.maxEventsPerMonth
@@ -83,5 +83,115 @@ export const POST = async (req: NextRequest) => {
     }
 
     const discord = new DiscordClient(process.env.DISCORD_BOT_TOKEN)
+
+    const dmChannel = await discord.createDM(user.discordId)
+
+    let requestData: unknown 
+
+    try {
+      requestData = await req.json()
+    } catch (err) {
+      return NextResponse.json(
+        { 
+          message: "Invalid request body",
+        },
+        { status: 400 }
+      )
+}
+ 
+const validationResult = REQUEST_VALIDATOR.parse(requestData) 
+
+const category = user.EventCategories.find((cat) => cat.name === validationResult.category)
+
+if (!category) {
+  return NextResponse.json(
+    { 
+      message: `You don't have a category named "${validationResult.category}"`,
+      },
+    { status: 404}
+  )
 }
 
+  const eventData = {
+    title: `${category.emoji || "🔔"} ${
+      category?.name.charAt(0).toUpperCase() + category?.name.slice(1)
+    }`,
+    description: 
+     validationResult.description || 
+      `A new ${category.name} event has occurred!`,
+      color: category.color, 
+      timestamp: new Date().toISOString(),
+      fields: Object.entries(validationResult.fields || {}).map(
+        ([key, value]) => {
+          return {
+            name: key,
+            value: String(value),
+            inline: true,
+    }
+  }
+),
+}
+
+const event = await db.event.create({
+  data: {
+    name: category.name,
+    formattedMessage: `${eventData.title}\n\n${eventData.description}`,
+    userId: user.id,
+    fields: validationResult.fields || {},
+    eventCategoryId: category.id,
+},
+})
+
+ try {
+  await discord.sendEmbed(dmChannel.id, eventData)
+  
+  await db.event.update({
+    where: { id: event.id },
+    data: { deliveryStatus: "DELIVERED"},
+  })
+
+  await db.quota.upsert ({
+    where: {userId: user.id, month: currentMonth, year: currentYear},
+    update: { count: { increment: 1 } },
+    create: {
+      userId: user.id,
+      month: currentMonth,
+      year: currentYear,
+      count: 1,
+      limit: quotaLimit,       // Ici on définit la limite de quota pour l'utilisateur 
+    },
+  })
+ } catch (err) {
+  await db.event.update({
+    where: { id: event.id },
+    data: { deliveryStatus: "FAILED" },
+  })
+
+  console.log(err)
+
+  return NextResponse.json({
+    message: "Error processing event",
+    eventId: event.id,
+  }, 
+  { status: 500 }
+ )
+}
+
+  return NextResponse.json({
+    message: "Event processed successfully",
+    eventId: event.id,
+  })
+} catch (err) {
+    console.error(err)
+
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ message: err.message }, { status: 422})
+  }
+
+  return NextResponse.json(
+    { message: "Internal server error" }, 
+    { status: 500 } 
+  )
+}
+}
+  
