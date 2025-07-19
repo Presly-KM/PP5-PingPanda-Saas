@@ -21,4 +21,6 @@ export const CategoryPageContent = ({          // Composant qui affiche le conte
      if (!pollingData.hasEvents) {
         return <EmptyCategoryState categoryName={category.name} />
      }
+     
+     const {}
 }
