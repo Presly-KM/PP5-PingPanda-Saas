@@ -183,11 +183,11 @@ export const CategoryPageContent = ({
    * END OF WHAT I FORGOT IN THE VIDEO
    */
 
-  const numericFieldSums = useMemo(() => {
-    if (!data?.events || data.events.length === 0) return {}
+  const numericFieldSums = useMemo(() => {                                      // Ici on calcule les sommes des champs numériques
+    if (!data?.events || data.events.length === 0) return {}                    // Ici on vérifie si les événements existent et s'il y en a au moins un. Ainsi, dans le cas où il n'y a pas d'événements, on retourne un objet vide.
 
-    const sums: Record<
-      string,
+    const sums: Record<                                                         // Ici on initialise un objet pour stocker les sommes des champs numériques
+      string,                                                                   // Ici on utilise un Record pour indiquer que les clés sont des chaînes de caractères et les valeurs sont des objets contenant les sommes. Les Record sont utiles pour créer des objets dynamiques avec des clés connues à l'avance. 
       {
         total: number
         thisWeek: number
@@ -196,11 +196,11 @@ export const CategoryPageContent = ({
       }
     > = {}
 
-    const now = new Date()
-    const weekStart = startOfWeek(now, { weekStartsOn: 0 })
-    const monthStart = startOfMonth(now)
+    const now = new Date()                                                       // Ici on récupère la date actuelle pour comparer les dates des événements
+    const weekStart = startOfWeek(now, { weekStartsOn: 0 })                      // Ici on calcule le début de la semaine en cours, en considérant que la semaine commence le dimanche (0)
+    const monthStart = startOfMonth(now)                                         // Ici on calcule le début du mois en cours
 
-    data.events.forEach((event) => {
+    data.events.forEach((event) => {                                             // Ici on parcourt chaque événement pour calculer les sommes des champs numériques
       const eventDate = event.createdAt
 
       Object.entries(event.fields as object).forEach(([field, value]) => {
