@@ -1,11 +1,12 @@
 import { db } from "@/db";
 import { router } from "../__internals/router";
 import { privateProcedure } from "../procedures";    
-import { startOfMonth } from "date-fns"; // Import de la fonction startOfMonth pour manipuler les dates       
+import { startOfDay, startOfMonth, startOfWeek } from "date-fns"; // Import de la fonction startOfMonth pour manipuler les dates       
 import { z } from "zod"; // Import de la bibliothèque zod pour la validation des schémas de données        
 import { CATEGORY_NAME_VALIDATOR } from "@/lib/validators/category-validator";
 import { parseColor } from "@/utils"; // Import de la fonction parseColor pour convertir les couleurs en entiers
 import { HTTPException } from "hono/http-exception";
+
 
 export const categoryRouter = router({                               // Ici on crée un routeur pour les catégories
     getEventCategories: privateProcedure.query(async({ c, ctx}) => { // Ici, on crée une procédure privée qui permet de récupérer les catégories d'événements de l'utilisateur. Cette procédure est accessible uniquement aux utilisateurs authentifiés grâce au middleware d'authentification utilisé dans privateProcedure. "c" est le contexte de la requête c'est-à-dire les informations de la requête HTTP, par exemple les en-têtes, les paramètres de la requête, etc. par exemple, on peut utiliser c.req.query pour accéder aux paramètres de la requête. "ctx" est le contexte de l'application, c'est-à-dire les informations globales de l'application, par exemple, les variables d'environnement, les configurations, etc. On peut utiliser ctx.db pour accéder à la base de données. privateProcedure.query est une méthode de Prisma qui permet de créer une requête pour récupérer des données dans la base de données. Cette méthode est utilisée pour créer des requêtes de type GET, c'est-à-dire des requêtes qui récupèrent des données sans les modifier. Elle prend en paramètre une fonction asynchrone qui reçoit le contexte de la requête et le contexte de l'application. Cette fonction doit retourner un objet JSON contenant les données à renvoyer au client.
@@ -147,4 +148,71 @@ pollCategory: privateProcedure
     
     return c.json({ hasEvents })    
 }), 
+
+getEventsByCategoryName: privateProcedure.input(z.object({
+    name: CATEGORY_NAME_VALIDATOR,
+    page: z.number(),
+    limit: z.number().max(50),
+    timeRange: z.enum(["today", "week", "month"]),
+})
+)
+.query(async ({ c, ctx, input }) => {
+    const { name, page, limit, timeRange } = input // On extrait les paramètres de la requête à partir de l'entrée de la requête. L'entrée est validée par le schéma zod défini dans la méthode input.
+   
+    const now = new Date() // On récupère la date actuelle pour filtrer les événements en fonction de la plage horaire sélectionnée.
+    let startDate: Date // On déclare une variable startDate pour stocker la date
+
+    switch (timeRange) { // On utilise une instruction switch pour déterminer la plage horaire sélectionnée par l'utilisateur.
+        case "today": // Si la plage horaire est "today", on utilise la date actuelle comme date de début.
+            startDate = startOfDay(now) // On utilise la fonction startOfDay pour obtenir le début de la journée actuelle. 
+            break;
+        case "week": // Si la plage horaire est "week", on utilise la date actuelle moins 7 jours comme date de début.
+            startDate = startOfWeek(now, { weekStartsOn: 0 }) // On utilise la fonction startOfWeek pour obtenir le début de la semaine actuelle. Le paramètre weekStartsOn: 0 indique que la semaine commence le dimanche.
+            break
+            case "month": // Si la plage horaire est "month", on utilise le début du mois actuel comme date de début.
+            startDate = startOfMonth(now) // On utilise la fonction startOfMonth pour obtenir le début du mois actuel.
+            break             
+    }
+
+    const [events, eventsCount, uniqueFieldCount ] = await Promise.all([ // On utilise Promise.all pour exécuter plusieurs requêtes en parallèle et attendre que toutes les promesses soient résolues avant de renvoyer la réponse au client.    
+        db.event.findMany({
+            where: {
+                EventCategory: { name, userId: ctx.user.id }, // On filtre les événements en fonction du nom de la catégorie et de l'ID de l'utilisateur authentifié. Cela permet de s'assurer que l'utilisateur ne peut accéder qu'à ses propres événements.
+                createdAt: { gte: startDate }, // On filtre les événements en fonction de la date de création. On récupère uniquement les événements créés à partir de la date de début déterminée par la plage horaire sélectionnée.
+            },
+            skip: (page - 1) * limit, // On utilise le paramètre skip pour ignorer les événements précédents en fonction de la page et de la limite spécifiées dans la requête. Cela permet de paginer les résultats.
+            take: limit, // On utilise le paramètre take pour limiter le nombre d'événements renvoyés dans la réponse en fonction de la limite spécifiée dans la requête.
+            orderBy: { createdAt: "desc" }, // On trie les événements par date de création, de la plus récente à la plus ancienne. Cela permet d'afficher les événements les plus récents en premier dans la liste.
+        }),
+        db.event.count({
+            where: {
+                EventCategory: { name, userId: ctx.user.id }, // On filtre les événements en fonction du nom de la catégorie et de l'ID de l'utilisateur authentifié. Cela permet de s'assurer que l'utilisateur ne peut accéder qu'à ses propres événements.
+                createdAt: { gte: startDate }, // On filtre les événements en fonction de la date de création. On récupère uniquement les événements créés à partir de la date de début déterminée par la plage horaire sélectionnée.
+            },
+        }),
+        db.event.findMany({
+            where: {
+                EventCategory: { name, userId: ctx.user.id }, // On filtre les événements en fonction du nom de la catégorie et de l'ID de l'utilisateur authentifié. Cela permet de s'assurer que l'utilisateur ne peut accéder qu'à ses propres événements.
+                createdAt: { gte: startDate }, // On filtre les événements en fonction de la date de création. On récupère uniquement les événements créés à partir de la date de début déterminée par la plage horaire sélectionnée.
+            },
+            select: { fields: true, }, // On sélectionne tous les champs des événements pour les renvoyer au client.
+           distinct: ["fields"], // On utilise distinct pour ne pas renvoyer les événements en double. Cela permet de récupérer uniquement les événements uniques en fonction des champs.
+        })
+        .then((events) => {
+            const fieldNames = new Set<string>() // On crée un ensemble pour stocker les noms de champs uniques des événements.
+            events.forEach((event) => {
+                Object.keys(event.fields as object).forEach((fieldName) => {
+                    fieldNames.add(fieldName) // On ajoute chaque nom de champ à l'ensemble.
+                })
+            })
+            return fieldNames.size // On renvoie le nombre de champs distincts pour les événements de la catégorie.
+            }),
+    ])
+
+       return c.superjson({
+        events,
+        eventsCount,
+        uniqueFieldCount,
+       })
+}),
 })
