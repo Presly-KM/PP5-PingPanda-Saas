@@ -86,7 +86,7 @@ export const CategoryPageContent = ({
     enabled: pollingData.hasEvents,
   })
 
-  const columns: ColumnDef<Event>[] = useMemo(
+  const columns: ColumnDef<Event>[] = useMemo(                                   // Ici on utilise useMemo pour mémoriser les colonnes et éviter de les recalculer à chaque rendu
     () => [
       {
         accessorKey: "category",
@@ -113,18 +113,18 @@ export const CategoryPageContent = ({
         },
       },
       ...(data?.events[0]
-        ? Object.keys(data.events[0].fields as object).map((field) => ({        // Ici on utilise Object.keys pour récupérer les clés des champs de l'événement
+        ? Object.keys(data.events[0].fields as object).map((field) => ({          // Ici on utilise Object.keys pour récupérer les clés des champs de l'événement
             accessorFn: (row: Event) =>
-              (row.fields as Record<string, any>)[field],                        // Ici on utilise un accessorFn pour accéder à la valeur du champ dans l'objet fields
+              (row.fields as Record<string, any>)[field],                         // Ici on utilise un accessorFn pour accéder à la valeur du champ dans l'objet fields
             header: field,
             cell: ({ row }: { row: Row<Event> }) =>
-              (row.original.fields as Record<string, any>)[field] || "-",        // Ici on utilise row.original pour accéder à l'événement original et récupérer la valeur du champ
+              (row.original.fields as Record<string, any>)[field] || "-",         // Ici on utilise row.original pour accéder à l'événement original et récupérer la valeur du champ
           }))
         : []),
       {
-        accessorKey: "deliveryStatus",
-        header: "Delivery Status",
-        cell: ({ row }) => (
+        accessorKey: "deliveryStatus",                                            // Ici on ajoute une colonne pour le statut de livraison
+        header: "Delivery Status",                                                // Ici on définit l'en-tête de la colonne
+        cell: ({ row }) => (                                                      // Ici on utilise une fonction pour afficher le statut de livraison
           <span
             className={cn("px-2 py-1 rounded-full text-xs font-semibold", {
               "bg-green-100 text-green-800":
@@ -135,20 +135,20 @@ export const CategoryPageContent = ({
                 row.getValue("deliveryStatus") === "PENDING",
             })}
           >
-            {row.getValue("deliveryStatus")}
+            {row.getValue("deliveryStatus")}                                      {/* Ici on affiche la valeur du statut de livraison */}
           </span>
         ),
       },
     ],
 
-    [category.name, data?.events]
+    [category.name, data?.events]                                                 // Ici on utilise useMemo pour mémoriser les colonnes et éviter de les recalculer à chaque rendu. Par exemple, si la catégorie change ou si les événements changent, les colonnes seront recalculées.
   )
 
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [sorting, setSorting] = useState<SortingState>([])                        // Ici on initialise l'état de tri avec un tableau vide
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])      // Ici on initialise l'état des filtres de colonnes avec un tableau vide
 
-  const table = useReactTable({
-    data: data?.events || [],
+  const table = useReactTable({                                                   // Ici on utilise useReactTable pour créer une instance de table avec les données et les colonnes
+    data: data?.events || [],                                                     // Ici on utilise les événements récupérés par la requête ou un tableau vide si les données ne sont pas encore disponibles
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -172,8 +172,8 @@ export const CategoryPageContent = ({
    */
   const router = useRouter()
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
+  useEffect(() => {                                                            // Ici on utilise useEffect pour mettre à jour l'URL lorsque la pagination change
+    const searchParams = new URLSearchParams(window.location.search)           // Ici on crée un objet URLSearchParams à partir de l'URL actuelle
     searchParams.set("page", (pagination.pageIndex + 1).toString())
     searchParams.set("limit", pagination.pageSize.toString())
     router.push(`?${searchParams.toString()}`, { scroll: false })
@@ -321,7 +321,7 @@ export const CategoryPageContent = ({
           </div>
         </div>
 
-        <Card contentClassName="px-6 py-4">
+        <Card contentClassName="px-6 py-4">                                {/* Ici on utilise le composant Card pour afficher le tableau des événements */}
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -340,18 +340,18 @@ export const CategoryPageContent = ({
               ))}
             </TableHeader>
 
-            <TableBody>
-              {isFetching ? (
-                [...Array(5)].map((_, rowIndex) => (
-                  <TableRow key={rowIndex}>
+            <TableBody>                                                                           {/* Ici on utilise le composant TableBody pour afficher les lignes du tableau */}
+              {isFetching ? (                                                                      // Ici on affiche un état de chargement si les données sont en cours de récupération
+                [...Array(5)].map((_, rowIndex) => (                                                // Ici on crée un tableau de 5 éléments pour afficher des lignes de chargement
+                  <TableRow key={rowIndex}>                                                      {/* Ici on utilise TableRow pour chaque ligne de chargement */}
                     {columns.map((_, cellIndex) => (
-                      <TableCell key={cellIndex}>
-                        <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />
+                      <TableCell key={cellIndex}>                                                  {/* Ici on utilise TableCell pour chaque cellule de chargement */}
+                        <div className="h-4 w-full bg-gray-200 animate-pulse rounded" />       {/* Ici on utilise une div avec des classes pour créer un effet de chargement */}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
-              ) : table.getRowModel().rows.length ? (
+              ) : table.getRowModel().rows.length ? (                                           // Ici on vérifie si le tableau a des lignes à afficher
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
