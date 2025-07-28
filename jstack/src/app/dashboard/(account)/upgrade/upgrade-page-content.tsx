@@ -80,7 +80,7 @@ export const UpgradePageContent = ({ plan } : { plan: Plan }) => {
 
            <p className="text-sm text-gray-500">
             Usage will reset {" "} 
-            {usageData?.resetDate ? (
+            {usageData?.resetDate ? (               
                 format(usageData.resetDate, "MMM d, yyyy") 
             ) : ( 
                <span className="animate-pulse w-8 h-4 bg-gray-200"></span>
