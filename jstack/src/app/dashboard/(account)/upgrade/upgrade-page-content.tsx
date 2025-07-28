@@ -78,16 +78,23 @@ export const UpgradePageContent = ({ plan } : { plan: Plan }) => {
         </Card>
     </div>
 
-           <p className="text-sm text-gray-500">
-            Usage will reset {" "} 
-            {usageData?.resetDate ? (               
-                format(usageData.resetDate, "MMM d, yyyy") 
-            ) : ( 
-               <span className="animate-pulse w-8 h-4 bg-gray-200"></span>
-            )}
-            {plan !== "PRO" ? <p onClick={() => createCheckoutSession ()} 
-            className="inline underline text-brand-600">{" "} or upgrade to Pro now to increaqe your limit &rarr;</p> : null}
-           </p>
-        </div>
-    )
+            <p className="text-sm text-gray-500">
+        Usage will reset{" "}
+        {usageData?.resetDate ? (
+          format(usageData.resetDate, "MMM d, yyyy")
+        ) : (
+          <span className="animate-pulse w-8 h-4 bg-gray-200"></span>
+        )}
+        {plan !== "PRO" ? (
+          <span
+            onClick={() => createCheckoutSession()}
+            className="inline cursor-pointer underline text-brand-600"
+          >
+            {" "}
+            or upgrade now to increase your limit &rarr;
+          </span>
+        ) : null}
+      </p>
+    </div>
+  )
 }
