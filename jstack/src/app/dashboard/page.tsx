@@ -6,8 +6,14 @@ import { redirect } from "next/navigation"
 import { PlusIcon } from "lucide-react"
 import { CreateEventCategoryModal } from "@/components/create-event-category-modal"
 import { Button } from "@/components/ui/button"                               // Le composant Button est utilisé pour
+import { createCheckoutSession } from "@/lib/stripe"
 
-const Page = async () => {
+interface PageProps {
+    searchParams: {
+      [ key: string]: string | string[] | undefined
+    }
+}
+const Page = async ({searchParams}: PageProps) => {
     const auth = await currentUser()
 
     if (!auth) {
@@ -22,6 +28,17 @@ const Page = async () => {
         redirect("/sign-in")
     }
     
+    const intent = searchParams.intent  
+
+    if (intent === "upgrade") {
+        const session = await createCheckoutSession({
+            userEmail: user.email,
+            userId: user.id,
+        })
+
+    if (session.url) redirect(session.url)  // Si une session de paiement est créée, l'utilisateur est redirigé vers l'URL de la session de paiement.       
+}
+
     return ( 
          <DashboardPage 
              cta={
