@@ -7,7 +7,7 @@ import { client } from "@/lib/client"
 import { createCheckoutSession } from "@/lib/stripe"             
 import { MaxWidthWrapper } from "@/components/max-width-wrapper"
 import { Heading } from "@/components/heading"
-import { CheckIcon } from "@heroicons/react/24/outline "
+import { CheckIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 
@@ -97,8 +97,7 @@ const Page = () => {
                             Get PingPanda
                         </Button>
                         <p className="mt-6 text-xs leading-5 text-gray-600">
-                            Secure payment. Start
-                        </p>
+                            Secure payment. Start monitoring in minutes.                        </p>
                     </div>
                   </div>
                 </div>
@@ -110,4 +109,4 @@ const Page = () => {
     }
 
 
-export default Page
+export default Page 
