@@ -13,4 +13,10 @@ export const paymentRouter = router({                // Ici on crée un routeur 
 
             return c.json({ url: session.url }) // Ici on retourne une réponse JSON avec une URL fictive pour la session de paiement. Cela doit être remplacé par la logique réelle de création de session de paiement.
         }),
+ 
+        getUserPlan: privateProcedure.query(async ({ c, ctx }) => {
+            const { user } = ctx
+            return c.json({ plan: user.plan }) // Ici on retourne le plan de l'utilisateur actuel dans une réponse JSON.
+        }),
+
 })
