@@ -7,6 +7,7 @@ import { PlusIcon } from "lucide-react"
 import { CreateEventCategoryModal } from "@/components/create-event-category-modal"
 import { Button } from "@/components/ui/button"                               // Le composant Button est utilisé pour
 import { createCheckoutSession } from "@/lib/stripe"
+import { PaymentSuccessModal } from "@/components/payment-success-modal"  // Importation du composant PaymentSuccessModal qui sera utilisé pour afficher un message de succès après le paiement.
 
 interface PageProps {
     searchParams: {
@@ -39,7 +40,11 @@ const Page = async ({searchParams}: PageProps) => {
     if (session.url) redirect(session.url)  // Si une session de paiement est créée, l'utilisateur est redirigé vers l'URL de la session de paiement.       
 }
 
+const success = searchParams.success
+
     return ( 
+        <>
+         {success ? <PaymentSuccessModal /> : null}  {/* Si le paramètre de recherche "success" est présent, le composant PaymentSuccessModal est affiché. Ce composant peut être utilisé pour informer l'utilisateur que le paiement a été effectué avec succès. */}
          <DashboardPage 
              cta={
             <CreateEventCategoryModal> 
@@ -53,6 +58,7 @@ const Page = async ({searchParams}: PageProps) => {
                 >
               <DashboardPageContent/>
            </DashboardPage>
+       </>
 )
 }
 
